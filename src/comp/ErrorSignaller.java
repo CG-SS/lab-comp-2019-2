@@ -33,10 +33,10 @@ public class ErrorSignaller {
         // is goPreviousToken is true, the error is signalled at the line of the
         // previous token, not the last one.
         if ( goPreviousToken )
-           showError( strMessage, lexer.getLineBeforeLastToken(),
-                 lexer.getLineNumberBeforeLastToken() );
+           showError( strMessage, lexer.peek(-1).getLine().toString(),
+                 lexer.peek(-1).getLine().intValue() );
         else
-           showError( strMessage, lexer.getCurrentLine(), lexer.getLineNumber() );
+           showError( strMessage, lexer.peek(0).getLine().toString(), lexer.peek(0).getLine().intValue() );
     }
 
 
