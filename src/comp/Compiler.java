@@ -3,6 +3,10 @@ package comp;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+
+import ast.Annot;
+import ast.AnnotParam;
 import ast.LiteralInt;
 import ast.MetaobjectAnnotation;
 import ast.Program;
@@ -10,6 +14,7 @@ import ast.Statement;
 import ast.TypeCianetoClass;
 import lexer.Lexer;
 import lexer.Token;
+import lexer.Token.Symbol;
 
 public class Compiler {
 
@@ -29,6 +34,37 @@ public class Compiler {
 		lexer.nextToken();
 		program = program(compilationErrorList);
 		return program;
+	}
+	
+	private void assertNextToken(final Token.Symbol symbol) {
+		lexer.nextToken();
+		if(lexer.getCurrentToken().getSymbol() != symbol)
+			error("Symbol " + symbol.toString() + " expected");
+	}
+	
+	private boolean checkNextToken(final Token.Symbol symbol) {
+		return lexer.peek(1).getSymbol() == symbol;
+	}
+	
+	private Annot annot(final List<CompilationError> compilationErrorList) {
+		this.assertNextToken(Symbol.ANNOT);
+		this.assertNextToken(Symbol.ID);
+		
+		final List<AnnotParam> annotParamList = new ArrayList<>();
+		
+		if(checkNextToken(Symbol.LEFTPAR)) {
+			lexer.nextToken();
+			while(!checkNextToken(Symbol.RIGHTPAR)) {
+				final AnnotParam annotParam = this.annotParam(compilationErrorList);
+				annotParamList.add(annotParam);
+			}
+			lexer.nextToken();
+		}
+		
+		return new Annot(annotParamList);
+	}
+	
+	private AnnotParam annotParam(final List<CompilationError> compilationErrorList) {
 	}
 
 	private Program program(ArrayList<CompilationError> compilationErrorList) {

@@ -24,11 +24,15 @@ public class Lexer {
         
         Token tok;
         tokenList.add(new Token(Token.Symbol.INIT, 0, ""));
-        while((tok = nextToken(input)).getSymbol() != Token.Symbol.EOF) {
+        while((tok = parseToken(input)).getSymbol() != Token.Symbol.EOF) {
         	tokenList.add(tok);
         }
         tokenPos = 0;
       }
+    
+    public Token getCurrentToken() {
+    	return this.peek(0);
+    }
 
 
     private static final int MaxValueInteger = 32767;
@@ -63,7 +67,7 @@ public class Lexer {
 		return tokenList.get(finalIndex);
 	}
 	
-    private Token nextToken(final char[] input) {
+    private Token parseToken(final char[] input) {
         char ch;
         
         while (  (ch = input[tokenPos]) == ' ' || ch == '\r' ||
@@ -80,7 +84,7 @@ public class Lexer {
                 // comment found
                while ( input[tokenPos] != '\0'&& input[tokenPos] != '\n' )
                  tokenPos++;
-               return nextToken(input);
+               return parseToken(input);
           }
           else if ( input[tokenPos] == '/' && input[tokenPos + 1] == '*' ) {
              int posStartComment = tokenPos;
@@ -97,7 +101,7 @@ public class Lexer {
                       getLine(posStartComment), lineNumberStartComment);
              else
                 tokenPos += 2;
-             return nextToken(input);
+             return parseToken(input);
           }
           else {
             if ( Character.isLetter( ch ) ) {
