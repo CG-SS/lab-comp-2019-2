@@ -7,6 +7,8 @@ import java.util.List;
 
 import ast.Annot;
 import ast.AnnotParam;
+import ast.AssignExpr;
+import ast.Expression;
 import ast.LiteralInt;
 import ast.MetaobjectAnnotation;
 import ast.Program;
@@ -64,7 +66,24 @@ public class Compiler {
 		return new Annot(annotParamList);
 	}
 	
+	private AssignExpr assignExpr(final List<CompilationError> compilationErrorList) {
+		final Expression expr = this.expression(compilationErrorList);
+		Expression assignExpr = null;
+		
+		if(this.checkNextToken(Symbol.ASSIGN)) {
+			lexer.nextToken();
+			assignExpr = this.expression(compilationErrorList);
+		}
+		
+		return new AssignExpr(expr, assignExpr);
+	}
+	
+	private Expression expression(final List<CompilationError> compilationErrorList) {
+		return new Expression();
+	}
+	
 	private AnnotParam annotParam(final List<CompilationError> compilationErrorList) {
+		return new AnnotParam();
 	}
 
 	private Program program(ArrayList<CompilationError> compilationErrorList) {
