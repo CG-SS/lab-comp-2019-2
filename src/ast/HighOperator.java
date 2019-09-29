@@ -1,8 +1,8 @@
 package ast;
 
-public class Expression extends ASTElement {
+public class HighOperator extends ASTElement {
 
-	public Expression(SimpleExpression simpleExpr, Relation rel, SimpleExpression relExpr) {
+	public HighOperator(String string) {
 		// TODO Auto-generated constructor stub
 	}
 

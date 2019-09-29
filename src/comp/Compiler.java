@@ -3,24 +3,39 @@ package comp;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ast.Annot;
 import ast.AnnotParam;
 import ast.AssignExpr;
+import ast.BasicType;
+import ast.BasicValue;
 import ast.Expression;
+import ast.ExpressionList;
+import ast.Factor;
+import ast.FormalParamDec;
+import ast.HighOperator;
+import ast.IdList;
 import ast.LiteralInt;
+import ast.LocalDec;
 import ast.MetaobjectAnnotation;
+import ast.ObjectCreation;
+import ast.ParamDec;
+import ast.PrimaryExpr;
 import ast.Program;
+import ast.Relation;
+import ast.SimpleExpression;
 import ast.Statement;
+import ast.Type;
 import ast.TypeCianetoClass;
 import lexer.Lexer;
 import lexer.Token;
 import lexer.Token.Symbol;
 
 public class Compiler {
-
-	public Compiler() { }
+	
+	private HashMap<String, String> classNameMap;
 
 	// compile must receive an input with an character less than
 	// p_input.lenght
@@ -29,6 +44,7 @@ public class Compiler {
 		ArrayList<CompilationError> compilationErrorList = new ArrayList<>();
 		signalError = new ErrorSignaller(outError, compilationErrorList);
 		symbolTable = new SymbolTable();
+		classNameMap = new HashMap<>();
 		lexer = new Lexer(input, signalError);
 		signalError.setLexer(lexer);
 
@@ -66,6 +82,26 @@ public class Compiler {
 		return new Annot(annotParamList);
 	}
 	
+	private BasicType basicType(final List<CompilationError> compilationErrorList) {
+		if(!checkNextToken(Symbol.STRING) || !checkNextToken(Symbol.INT) || !checkNextToken(Symbol.BOOLEAN)) {
+			this.error("Valid types are 'Int', 'String' or 'Boolean'");
+		}
+		lexer.nextToken();
+		
+		return new BasicType(lexer.peek(0).toString());
+	}
+	
+	private BasicValue basicValue(final List<CompilationError> compilationErrorList) {
+		if(!checkNextToken(Symbol.LITERALINT) || !checkNextToken(Symbol.LITERALSTRING) || !checkNextToken(Symbol.TRUE) || !checkNextToken(Symbol.FALSE)) {
+			this.error("Expected literal boolean, int or string");
+		}
+		lexer.nextToken();
+
+		if(lexer.getCurrentToken().getSymbol() == Symbol.TRUE || lexer.getCurrentToken().getSymbol() == Symbol.FALSE)
+			return new BasicValue(Symbol.TRUE.toString());
+		return new BasicValue(lexer.getCurrentToken().getValue());
+	}
+	
 	private AssignExpr assignExpr(final List<CompilationError> compilationErrorList) {
 		final Expression expr = this.expression(compilationErrorList);
 		Expression assignExpr = null;
@@ -79,9 +115,124 @@ public class Compiler {
 	}
 	
 	private Expression expression(final List<CompilationError> compilationErrorList) {
-		return new Expression();
+		final SimpleExpression simpleExpr = this.simpleExpression(compilationErrorList);
+		Relation rel = null;
+		SimpleExpression relExpr = null;
+		
+		if(checkNextToken(Symbol.EQ) || checkNextToken(Symbol.NEQ) || checkNextToken(Symbol.LT) || checkNextToken(Symbol.GE) || checkNextToken(Symbol.GT) || checkNextToken(Symbol.LE)) {
+			lexer.nextToken();
+			rel = this.relation(compilationErrorList);
+			relExpr = this.simpleExpression(compilationErrorList);
+		}
+		
+		return new Expression(simpleExpr, rel, relExpr);
 	}
 	
+	private ExpressionList expressionList(final List<CompilationError> compilationErrorList) {
+		final Expression expr = this.expression(compilationErrorList);
+		final List<Expression> exprList = new ArrayList<>();
+		
+		while(checkNextToken(Symbol.COMMA)) {
+			lexer.nextToken();
+			exprList.add(this.expression(compilationErrorList));
+		}
+		
+		return new ExpressionList(expr, exprList);
+	}
+	
+	private Factor factor(final List<CompilationError> compilationErrorList) {
+		BasicValue basicValue = null;
+		Expression expression = null;
+		Factor factor = null;
+		ObjectCreation objCreation = null;
+		PrimaryExpr primaryExpr = null;
+		String nil = null;
+		
+		if(checkNextToken(Symbol.LITERALINT) || checkNextToken(Symbol.LITERALSTRING) || checkNextToken(Symbol.TRUE) || checkNextToken(Symbol.FALSE)) {
+			basicValue = this.basicValue(compilationErrorList);
+		} else if(checkNextToken(Symbol.ID) && lexer.peek(1).getSymbol() == Symbol.DOT && lexer.peek(2).getSymbol() == Symbol.NEW) {
+			objCreation = this.objectCreation(compilationErrorList);
+		} else if(checkNextToken(Symbol.ID)) {
+			primaryExpr = this.primaryExpression(compilationErrorList);
+		} else if(checkNextToken(Symbol.LEFTPAR)) {
+			lexer.nextToken();
+			expression = this.expression(compilationErrorList);
+			this.assertNextToken(Symbol.RIGHTPAR);
+		} else if(checkNextToken(Symbol.NOT)) {
+			lexer.nextToken();
+			factor = this.factor(compilationErrorList);
+		} else {
+			assertNextToken(Symbol.NULL);
+			nil = lexer.getCurrentToken().toString();
+		}
+		
+		return new Factor(basicValue, expression, factor, objCreation, primaryExpr, nil);
+	}
+	
+	private FormalParamDec formalParamDec(List<CompilationError> compilationErrorList) {
+		final ParamDec paramDec = this.paramDec(compilationErrorList);
+		final List<ParamDec> paramDecList = new ArrayList<>();
+		while(checkNextToken(Symbol.COMMA)) {
+			lexer.nextToken();
+			paramDecList.add(this.paramDec(compilationErrorList));
+		}
+		
+		return new FormalParamDec(paramDec, paramDecList);
+	}
+	
+	private HighOperator highOperator(List<CompilationError> compilationErrorList) {
+		if(!this.checkNextToken(Symbol.MULT) || !this.checkNextToken(Symbol.DIV) || !this.checkNextToken(Symbol.AND)) {
+			this.error("Expected '*', '/' or '&&'");
+		}
+		lexer.nextToken();
+		
+		return new HighOperator(lexer.getCurrentToken().toString());
+	}
+	
+	private LocalDec localDec(List<CompilationError> compilationErrorList) {
+		this.assertNextToken(Symbol.VAR);
+		final Type type = this.type();
+		final IdList idList = this.idList();
+		Expression expression = null;
+		
+		if(checkNextToken(Symbol.ASSIGN)) {
+			next();
+			expression = this.expression(compilationErrorList);
+		}
+		
+		return new LocalDec(type, idList, expression);
+	}
+	
+	private IdList idList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private ParamDec paramDec(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private PrimaryExpr primaryExpression(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private ObjectCreation objectCreation(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Relation relation(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private SimpleExpression simpleExpression(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private AnnotParam annotParam(final List<CompilationError> compilationErrorList) {
 		return new AnnotParam();
 	}
@@ -456,17 +607,8 @@ public class Compiler {
 
 	}
 
-	private void type() {
-		if ( lexer.peek(0).getSymbol() == Token.Symbol.INT || lexer.peek(0).getSymbol() == Token.Symbol.BOOLEAN || lexer.peek(0).getSymbol() == Token.Symbol.STRING ) {
-			next();
-		}
-		else if ( lexer.peek(0).getSymbol() == Token.Symbol.ID ) {
-			next();
-		}
-		else {
-			this.error("A type was expected");
-		}
-
+	private Type type() {
+		return null;
 	}
 
 

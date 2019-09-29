@@ -1,8 +1,8 @@
 package ast;
 
-public class Expression extends ASTElement {
+public class LocalDec extends ASTElement {
 
-	public Expression(SimpleExpression simpleExpr, Relation rel, SimpleExpression relExpr) {
+	public LocalDec(Type type, IdList idList, Expression expression) {
 		// TODO Auto-generated constructor stub
 	}
 

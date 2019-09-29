@@ -1,8 +1,10 @@
 package ast;
 
-public class Expression extends ASTElement {
+import java.util.List;
 
-	public Expression(SimpleExpression simpleExpr, Relation rel, SimpleExpression relExpr) {
+public class ExpressionList extends ASTElement {
+
+	public ExpressionList(Expression expr, List<Expression> exprList) {
 		// TODO Auto-generated constructor stub
 	}
 
