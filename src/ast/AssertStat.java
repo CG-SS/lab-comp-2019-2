@@ -1,11 +1,12 @@
 package ast;
 
-public class ParamDec extends ASTElement {
+import java.util.List;
 
-	public ParamDec(String idName) {
+public class AssertStat extends ASTElement {
+	
+	public AssertStat(final String nome) {
 		// TODO Auto-generated constructor stub
 	}
-
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub

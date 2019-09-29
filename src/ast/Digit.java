@@ -1,8 +1,8 @@
 package ast;
 
-public class ParamDec extends ASTElement {
+public class Digit extends ASTElement {
 
-	public ParamDec(String idName) {
+	public Digit(String numString) {
 		// TODO Auto-generated constructor stub
 	}
 

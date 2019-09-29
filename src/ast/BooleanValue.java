@@ -1,8 +1,8 @@
 package ast;
 
-public class ParamDec extends ASTElement {
+public class BooleanValue extends ASTElement {
 
-	public ParamDec(String idName) {
+	public BooleanValue(String booleanString) {
 		// TODO Auto-generated constructor stub
 	}
 

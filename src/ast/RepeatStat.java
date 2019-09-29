@@ -1,8 +1,8 @@
 package ast;
 
-public class ParamDec extends ASTElement {
+public class RepeatStat extends ASTElement {
 
-	public ParamDec(String idName) {
+	public RepeatStat() {
 		// TODO Auto-generated constructor stub
 	}
 

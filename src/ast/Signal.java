@@ -1,8 +1,8 @@
 package ast;
 
-public class ParamDec extends ASTElement {
+public class Signal extends ASTElement {
 
-	public ParamDec(String idName) {
+	public Signal(String sinal) {
 		// TODO Auto-generated constructor stub
 	}
 

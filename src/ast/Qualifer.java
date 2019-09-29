@@ -1,8 +1,10 @@
 package ast;
 
-public class ParamDec extends ASTElement {
+import java.util.ArrayList;
 
-	public ParamDec(String idName) {
+public class Qualifer extends ASTElement {
+
+	public Qualifer(ArrayList<String> arrListQualifer) {
 		// TODO Auto-generated constructor stub
 	}
 

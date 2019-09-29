@@ -8,9 +8,14 @@ import java.util.List;
 
 import ast.Annot;
 import ast.AnnotParam;
+import ast.AssertStat;
 import ast.AssignExpr;
 import ast.BasicType;
 import ast.BasicValue;
+import ast.BooleanValue;
+import ast.ClassDec;
+import ast.CompStatement;
+import ast.Digit;
 import ast.Expression;
 import ast.ExpressionList;
 import ast.Factor;
@@ -19,12 +24,18 @@ import ast.HighOperator;
 import ast.IdList;
 import ast.LiteralInt;
 import ast.LocalDec;
+import ast.Member;
 import ast.MetaobjectAnnotation;
 import ast.ObjectCreation;
 import ast.ParamDec;
 import ast.PrimaryExpr;
 import ast.Program;
+import ast.Qualifer;
+import ast.ReadExpr;
 import ast.Relation;
+import ast.RepeatStat;
+import ast.ReturnStats;
+import ast.Signal;
 import ast.SimpleExpression;
 import ast.Statement;
 import ast.Type;
@@ -469,29 +480,29 @@ public class Compiler {
 		if ( getNextToken ) lexer.nextToken();
 	}
 
-	// CompStatement ::= “{” { Statement } “}”
+	/* CompStatement ::= “{” { Statement } “}” */
 	private CompStatement compStatement(final List<CompilationError> compilationErrorList) {
 		
 		assertNextToken(Symbol.LEFTCURBRACKET);
 		this.statementList();
 		assertNextToken(Symbol.RIGHTCURBRACKET);
 		
-		return new CompStatement(statement);
+		return new CompStatement();
 	}
 	
 	// Digit ::= “0” | ... | “9”
 	private Digit digit(final List<CompilationError> compilationErrorList) {
 		
-		String numero = lexer.peek(1).getValue();
-		if (!numero.equals('0') || !numero.equals('1') || !numero.equals('2') || 
-			!numero.equals('3') || !numero.equals('4') || !numero.equals('5') ||
-			!numero.equals('6') || !numero.equals('7') || !numero.equals('8') ||  
-			!numero.equals('8')){
+		String numString = lexer.peek(1).getValue();
+		if (!numString.equals('0') || !numString.equals('1') || !numString.equals('2') || 
+			!numString.equals('3') || !numString.equals('4') || !numString.equals('5') ||
+			!numString.equals('6') || !numString.equals('7') || !numString.equals('8') ||  
+			!numString.equals('8')){
 			this.error("Not a Digit");
 		}
 		lexer.nextToken();
 		
-		return new Digit(numero);
+		return new Digit(numString);
 	}
 	
 	private ClassDec classDec(final List<CompilationError> compilationErrorList) {
@@ -525,39 +536,15 @@ public class Compiler {
 		lexer.nextToken();
 		
 		return new ClassDec();
-		/*
-		if ( lexer.peek(0).getSymbol() == Token.Symbol.ID && lexer.peek(0).getValue().equals("open") ) {
-			// open class
-		}
-		if ( lexer.peek(0).getSymbol() != Token.Symbol.CLASS ) error("'class' expected");
-		lexer.nextToken();
-		if ( lexer.peek(0).getSymbol() != Token.Symbol.ID )
-			error("Identifier expected");
-		String className = lexer.peek(0).getValue();
-		lexer.nextToken();
-		if ( lexer.peek(0).getSymbol() == Token.Symbol.EXTENDS ) {
-			lexer.nextToken();
-			if ( lexer.peek(0).getSymbol() != Token.Symbol.ID )
-				error("Identifier expected");
-			String superclassName = lexer.peek(0).getValue();
-
-			lexer.nextToken();
-		}
-
-		memberList();
-		if ( lexer.peek(0).getSymbol() != Token.Symbol.END)
-			error("'end' expected");
-		lexer.nextToken();
-		 */
 	}
 	// Member ::= FieldDec | MethodDec
 	private Member member(final List<CompilationError> compilationErrorList) {
 		
 		if ( checkNextToken(Symbol.VAR) ) {
-			fieldDec();
+		 this.fieldDec();
 		}
 		else if ( checkNextToken(Symbol.FUNC) ) {
-			methodDec();
+			methodDec(compilationErrorList);
 		}
 		
 		return new Member();
@@ -690,9 +677,9 @@ public class Compiler {
 
 	}
 	// RepeatStat ::= “repeat” StatementList “until” Expression
-	private void repeatStat(final List<CompilationError> compilationErrorList) {
+	private RepeatStat repeatStat(final List<CompilationError> compilationErrorList) {
 		assertNextToken(Symbol.REPEAT);
-		List<StatementList> statList = this.statementList();
+		ArrayList<StatementList> statList = this.statementList();
 		assertNextToken(Symbol.UNTIL);
 		this.expression(compilationErrorList);
 		return new RepeatStat(statList);
@@ -717,7 +704,7 @@ public class Compiler {
 	}
 	
 	private Signal signal(final List<CompilationError> compilationErrorList) {
-		String sinal;
+		String sinal = "";
 		if (checkNextToken(Symbol.PLUS) || checkNextToken(Symbol.MINUS)) {
 			lexer.nextToken();
 			sinal = lexer.getCurrentToken().getValue();
@@ -902,19 +889,13 @@ public class Compiler {
 			}
 		}
 	}
-	/**
-	 * change this method to 'private'.
-	 * uncomment it
-	 * implement the methods it calls
-	 */
-	private Statement assertStat() {
+	// AssertStat ::= “assert” Expression “,” StringValue
+	private AssertStat assertStat(List<CompilationError> compilationErrorList) {
 
-		if (!checkNextToken(Symbol.ASSERT)) {
-			this.error("Expected 'assert' literal");
-		}
+		assertNextToken(Symbol.ASSERT);
 		lexer.nextToken();
 		int lineNumber = lexer.peek(0).getLine();
-		expr();
+		this.expression(compilationErrorList);
 		if ( !checkNextToken(Symbol.COMMA) ) {
 			this.error("',' expected after the expression of the 'assert' statement");
 		}
@@ -922,11 +903,7 @@ public class Compiler {
 		if ( !checkNextToken(Symbol.LITERALSTRING) ) { 
 			this.error("A literal string expected after the ',' of the 'assert' statement");
 		}
-		String message = lexer.peek(0).getValue();
-		/*lexer.nextToken();
-		if ( lexer.peek(0).getSymbol() == Token.Symbol.SEMICOLON )
-			lexer.nextToken();
-		*/
+		String message = lexer.getCurrentToken().getValue();
 		return new AssertStat(message);
 	}
 
@@ -936,7 +913,7 @@ public class Compiler {
 			this.error("Expected true or false");
 		}
 		lexer.nextToken();
-		return new BooleanValue(this.lexer.peek(0).getValue());
+		return new BooleanValue(this.lexer.getCurrentToken().getValue());
 	}
 
 
