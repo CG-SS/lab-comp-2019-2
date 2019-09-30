@@ -152,7 +152,12 @@ public class Lexer {
                 tokenPos++;
                 switch ( ch ) {
                     case '+' :
-                    	return new Token(Token.Symbol.PLUS, lineNumber, "");
+                    	if(input[tokenPos] == '+') {
+                    		tokenPos++;
+                    		return new Token(Token.Symbol.PLUSPLUS, lineNumber, "");
+                    	} else {
+                    		return new Token(Token.Symbol.PLUS, lineNumber, "");
+                    	}
                     case '-' :
                       if ( input[tokenPos] == '>' ) {
                           tokenPos++;

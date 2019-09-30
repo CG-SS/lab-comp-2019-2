@@ -11,9 +11,7 @@ public class Token {
 		NOT("!"), NULL("null"), OR("||"), OVERRIDE("override"), PLUS("+"), PRIVATE("private"), PUBLIC("public"),
 		READ("read"), REPEAT("repeat"), RETURN("return"), RIGHTCURBRACKET("}"), RIGHTPAR(")"), SELF("self"),
 		SEMICOLON(";"), STRING("String"), SUPER("super"), TRUE("true"), UNTIL("until"), VAR("var"), VOID("void"),
-		WHILE("while"), WRITE("write"), WRITELN("writeln"), INIT("~init"),
-		// adicionado 
-		OPEN("open"), IN("in"), READINT("readInt"), READSTRING("readString"), SHARED("shared");
+		WHILE("while"), WRITE("write"), WRITELN("writeln"), INIT("~init"), PLUSPLUS("++"), OUT("Out"), PRINT("print:"), PRINTLN("println:");
 
 		private final String name;
 

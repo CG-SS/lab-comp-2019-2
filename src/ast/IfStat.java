@@ -1,6 +1,6 @@
 package ast;
 
-public class Signal extends ASTElement {
+public class IfStat extends ASTElement {
 
 	@Override
 	public void genJava(PW pw) {

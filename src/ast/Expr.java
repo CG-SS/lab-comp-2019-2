@@ -1,12 +1,9 @@
 package ast;
 
-abstract public class Expr extends Statement {
-    abstract public void genC( PW pw, boolean putParenthesis );
-	@Override
-	public void genC(PW pw) {
-		this.genC(pw, false);
+public class Expr extends Statement {
+    public Expr(AssignExpr assignExpr, IfStat ifStat, WhileStat whileStat, ReturnStat returnStat, PrintStat printStat,
+			RepeatStat repeatStat, LocalDec localDec, AssertStat assertStat, String brk) {
+		super(assignExpr, ifStat, whileStat, returnStat, printStat, repeatStat, localDec, assertStat, brk);
+		// TODO Auto-generated constructor stub
 	}
-
-      // new method: the type of the expression
-    abstract public Type getType();
 }
