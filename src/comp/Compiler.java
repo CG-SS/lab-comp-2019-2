@@ -12,34 +12,38 @@ import ast.AssertStat;
 import ast.AssignExpr;
 import ast.BasicType;
 import ast.BasicValue;
-import ast.BooleanValue;
 import ast.ClassDec;
-import ast.CompStatement;
-import ast.Digit;
 import ast.Expression;
 import ast.ExpressionList;
 import ast.Factor;
 import ast.FormalParamDec;
 import ast.HighOperator;
+import ast.Id;
 import ast.IdList;
-import ast.LiteralInt;
+import ast.IfStat;
 import ast.LocalDec;
+import ast.LowOperator;
 import ast.Member;
+import ast.MemberList;
 import ast.MetaobjectAnnotation;
 import ast.ObjectCreation;
 import ast.ParamDec;
 import ast.PrimaryExpr;
+import ast.PrintStat;
 import ast.Program;
-import ast.Qualifer;
-import ast.ReadExpr;
+import ast.Qualifier;
 import ast.Relation;
 import ast.RepeatStat;
-import ast.ReturnStats;
+import ast.ReturnStat;
 import ast.Signal;
+import ast.SignalFactor;
 import ast.SimpleExpression;
 import ast.Statement;
+import ast.StatementList;
+import ast.SumSubExpression;
+import ast.Term;
 import ast.Type;
-import ast.TypeCianetoClass;
+import ast.WhileStat;
 import lexer.Lexer;
 import lexer.Token;
 import lexer.Token.Symbol;
@@ -109,7 +113,7 @@ public class Compiler {
 		lexer.nextToken();
 
 		if(lexer.getCurrentToken().getSymbol() == Symbol.TRUE || lexer.getCurrentToken().getSymbol() == Symbol.FALSE)
-			return new BasicValue(Symbol.TRUE.toString());
+			return new BasicValue(lexer.getCurrentToken().toString());
 		return new BasicValue(lexer.getCurrentToken().getValue());
 	}
 	
@@ -214,124 +218,38 @@ public class Compiler {
 		return new LocalDec(type, idList, expression);
 	}
 	
-	// IdList ::= Id { “,” Id }
-	private IdList idList(List<CompilationError> compilationErrorList) {
-		assertNextToken(Symbol.ID);
-		List<String> idList = new ArrayList<>();
-		while(checkNextToken(Symbol.COMMA)) {
+	private Type type(List<CompilationError> compilationErrorList) {
+		Id id = null;
+		BasicType basicType = null;
+		
+		if(checkNextToken(Symbol.ID)) {
 			lexer.nextToken();
-			idList.add(this.id(compilationErrorList));
+			id = new Id(lexer.getCurrentToken().getValue());
+		} else {
+			basicType = this.basicType(compilationErrorList);
 		}
-		return new IdList(idList);
-	}
-	// ParamDec ::= Type Id
-	private ParamDec paramDec(List<CompilationError> compilationErrorList) {
-		type();
-		assertNextToken(Symbol.ID);
-		String idName = lexer.getCurrentToken().getValue();
-		return new ParamDec(idName);
-	}
-	// PrimaryExpr ::= 
-	//		“super” “.” IdColon ExpressionList |
-	//		“super” “.” Id |
-	//		Id |
-	//		Id “.” Id |
-	//		Id “.” IdColon ExpressionList |
-	//		“self” |
-	//		“self” “.” Id |
-	//		“self” ”.” IdColon ExpressionList |
-	//		“self” ”.” Id “.” IdColon ExpressionList |
-	//		“self” ”.” Id “.” Id |
-	private PrimaryExpr primaryExpression(List<CompilationError> compilationErrorList) {
-		String idColon;
-		String idFirst;
-		String idSecond;
-		ExpressionList expList = new ExpressionList();
-		// super
-		if (checkNextToken(Symbol.SUPER)) {
-			lexer.nextToken();
-			assertNextToken(Symbol.DOT);
-			if (checkNextToken(Symbol.IDCOLON)) {
-				lexer.nextToken();
-				idColon = lexer.getCurrentToken().getValue();
-				expList =  this.expressionList(compilationErrorList);
-			}
-			if (checkNextToken(Symbol.ID)) {
-				lexer.nextToken();
-				idFirst = lexer.getCurrentToken().getValue();
-			}
-		} else if (checkNextToken(Symbol.ID)) {
-			lexer.nextToken();
-			idFirst = this.lexer.getCurrentToken().getValue();
-			if (checkNextToken(Symbol.DOT)) {
-				lexer.nextToken();
-				if (checkNextToken(Symbol.ID)) {
-					lexer.nextToken();
-					idSecond = this.lexer.getCurrentToken().getValue();
-					if (checkNextToken(Symbol.DOT)) {
-						
-					}
-				} else if (checkNextToken(Symbol.IDCOLON)) {
-					lexer.nextToken();
-					idColon = this.lexer.getCurrentToken().getValue();
-					expList =  this.expressionList(compilationErrorList);
-				}
-			}
-			//		“self” |
-			//		“self” “.” Id |
-			//		“self” ”.” IdColon ExpressionList |
-			//		“self” ”.” Id “.” IdColon ExpressionList |
-			//		“self” ”.” Id “.” Id |
-		} else if (checkNextToken(Symbol.SELF)) {
-			lexer.nextToken();
-			if (checkNextToken(Symbol.DOT)) {
-				lexer.nextToken();
-				if (checkNextToken(Symbol.ID)) {
-					lexer.nextToken();
-					idFirst = lexer.getCurrentToken().getValue();
-					if (checkNextToken(Symbol.DOT)) {
-						lexer.nextToken();
-						if (checkNextToken(Symbol.ID)) {
-							lexer.nextToken();
-							idSecond = lexer.getCurrentToken().getValue();
-						} else if (checkNextToken(Symbol.IDCOLON)) {
-							lexer.nextToken();
-							idColon = this.lexer.getCurrentToken().getValue();
-							expList =  this.expressionList(compilationErrorList);
-						}
-					}
-				} else if (checkNextToken(Symbol.IDCOLON)) {
-					lexer.nextToken();
-					idColon = this.lexer.getCurrentToken().getValue();
-					expList =  this.expressionList(compilationErrorList);
-				}
-			}
-		}
-		return new PrimaryExpr(expList, idColon, idFirst, idSecond);
+		
+		return new Type(id, basicType);
 	}
 	
-	private String id(List<CompilationError> compilationErrorList) {
-		assertNextToken(Symbol.ID);
-		return lexer.getCurrentToken().getValue();
+	private IdList idList() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	// ReadExpr ::= “In” “.” ( “readInt” | “readString” )
-	private ReadExpr readExpr(List<CompilationError> compilationErrorList) {
-		assertNextToken(Symbol.IN);
-		assertNextToken(Symbol.DOT);
-		if (!checkNextToken(Symbol.READINT) || !checkNextToken(Symbol.READSTRING)) {
-			this.error("Expected readInt or readString");
-		}
-		assertNextToken(Symbol.LEFTPAR);
-		
-		return new ReadExpr();
+
+	private ParamDec paramDec(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	// ObjectCreation ::= Id “.” “new”
+
+	private PrimaryExpr primaryExpression(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private ObjectCreation objectCreation(List<CompilationError> compilationErrorList) {
-		assertNextToken(Symbol.ID);
-		String idName = lexer.getCurrentToken().getValue();
-		assertNextToken(Symbol.DOT);
-		assertNextToken(Symbol.NEW);
-		return new ObjectCreation(idName);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private Relation relation(List<CompilationError> compilationErrorList) {
@@ -339,24 +257,13 @@ public class Compiler {
 		return null;
 	}
 
-	private SimpleExpression simpleExpression(List<CompilationError> compilationErrorList) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	private AnnotParam annotParam(final List<CompilationError> compilationErrorList) {
-		
-		if(!checkNextToken(Symbol.INT) || !checkNextToken(Symbol.STRING) || !checkNextToken(Symbol.ID)) {
-			this.error("Expected int, string or id");
-		}
-		lexer.nextToken();
-		return new AnnotParam(lexer.getCurrentToken().getValue());
+		return new AnnotParam();
 	}
 
 	private Program program(ArrayList<CompilationError> compilationErrorList) {
 		ArrayList<MetaobjectAnnotation> metaobjectCallList = new ArrayList<>();
-		ArrayList<TypeCianetoClass> CianetoClassList = new ArrayList<>();
-		Program program = new Program(CianetoClassList, metaobjectCallList, compilationErrorList);
+		Program program = new Program(metaobjectCallList, compilationErrorList);
 		boolean thereWasAnError = false;
 		while ( lexer.peek(0).getSymbol() == Token.Symbol.CLASS ||
 				(lexer.peek(0).getSymbol() == Token.Symbol.ID && lexer.peek(0).getValue().equals("open") ) ||
@@ -480,88 +387,176 @@ public class Compiler {
 		if ( getNextToken ) lexer.nextToken();
 	}
 
-	/* CompStatement ::= “{” { Statement } “}” */
-	private CompStatement compStatement(final List<CompilationError> compilationErrorList) {
+	private ClassDec classDec() {
+		return null;
+	}
+
+	private MemberList memberList() {
+		Qualifier qualifier = null;
+		Member member = null;
 		
-		assertNextToken(Symbol.LEFTCURBRACKET);
-		this.statementList();
-		assertNextToken(Symbol.RIGHTCURBRACKET);
+		if(checkNextToken(Symbol.PUBLIC) || checkNextToken(Symbol.PRIVATE) || checkNextToken(Symbol.FINAL) || checkNextToken(Symbol.OVERRIDE)) {
+			qualifier = this.qualifier();
+		}
 		
-		return new CompStatement();
+		if(checkNextToken(Symbol.VAR) || checkNextToken(Symbol.FUNC)) {
+			member = this.member();
+		}
+		
+		return new MemberList(qualifier, member);
 	}
 	
-	// Digit ::= “0” | ... | “9”
-	private Digit digit(final List<CompilationError> compilationErrorList) {
+	private SignalFactor signalFactor(final List<CompilationError> compilationErrorList) {
+		Signal signal = null;
 		
-		String numString = lexer.peek(1).getValue();
-		if (!numString.equals('0') || !numString.equals('1') || !numString.equals('2') || 
-			!numString.equals('3') || !numString.equals('4') || !numString.equals('5') ||
-			!numString.equals('6') || !numString.equals('7') || !numString.equals('8') ||  
-			!numString.equals('8')){
-			this.error("Not a Digit");
+		if(checkNextToken(Symbol.PLUS) || checkNextToken(Symbol.MINUS)) {
+			signal = this.signal(compilationErrorList);
 		}
-		lexer.nextToken();
 		
-		return new Digit(numString);
+		final Factor factor = this.factor(compilationErrorList);
+		return new SignalFactor(signal, factor);
 	}
 	
-	private ClassDec classDec(final List<CompilationError> compilationErrorList) {
-		boolean openClassBol = false;
-		boolean extendsClassBol = false;
-		String className = null;
+	private SumSubExpression sumSubExpression(final List<CompilationError> compilationErrorList) {
+		final Term term = this.term(compilationErrorList);
+		final List<LowOperator> opList = new ArrayList<>();
+		final List<Term> termList = new ArrayList<>();
 		
-		if (checkNextToken(Symbol.OPEN)) {
-			openClassBol = true;
-			lexer.nextToken();
+		while(checkNextToken(Symbol.PLUS) || checkNextToken(Symbol.MINUS) || checkNextToken(Symbol.OR)) {
+			opList.add(this.lowOperator(compilationErrorList));
+			termList.add(this.term(compilationErrorList)); 
 		}
 		
-		assertNextToken(Symbol.CLASS);
-		assertNextToken(Symbol.ID);
-		className = lexer.getCurrentToken().getValue();
-		
-		if (checkNextToken(Symbol.EXTENDS)) {
-			extendsClassBol = true;
-			lexer.nextToken();
-			if (!checkNextToken(Symbol.ID)) {
-				this.error("Expected ID before Extends");
-			}
-			lexer.nextToken();
-		}
-		
-		final MemberList memberListVar = this.memberList(); // compilationErrorList  (passar parametro
-		
-		if (!checkNextToken(Symbol.END)) {
-			this.error("Expected 'end'");
-		}
-		lexer.nextToken();
-		
-		return new ClassDec();
+		return new SumSubExpression(term, opList, termList);
 	}
-	// Member ::= FieldDec | MethodDec
-	private Member member(final List<CompilationError> compilationErrorList) {
-		
-		if ( checkNextToken(Symbol.VAR) ) {
-		 this.fieldDec();
-		}
-		else if ( checkNextToken(Symbol.FUNC) ) {
-			methodDec(compilationErrorList);
-		}
-		
-		return new Member();
+
+	private LowOperator lowOperator(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	private void memberList() {
-		while ( true ) {
-			qualifier();
-			if ( lexer.peek(0).getSymbol() == Token.Symbol.VAR ) {
-				fieldDec();
-			}
-			else if ( lexer.peek(0).getSymbol() == Token.Symbol.FUNC ) {
-				methodDec();
-			}
-			else {
-				break;
-			}
+
+	private SimpleExpression simpleExpression(final List<CompilationError> compilationErrorList) {
+		final SumSubExpression sumSubExpr = this.sumSubExpression(compilationErrorList);
+		final List<SumSubExpression> sumSubExpressionList = new ArrayList<>();
+		
+		while(checkNextToken(Symbol.PLUSPLUS)) {
+			lexer.nextToken();
+			sumSubExpressionList.add(this.sumSubExpression(compilationErrorList));
 		}
+		
+		return new SimpleExpression(sumSubExpr, sumSubExpressionList);
+	}
+
+	private Signal signal(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Member member() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private Statement statement(List<CompilationError> compilationErrorList) {
+		AssignExpr assignExpr = null;
+		IfStat ifStat = null;
+		WhileStat whileStat = null;
+		ReturnStat returnStat = null;
+		PrintStat printStat = null;
+		RepeatStat repeatStat = null;
+		LocalDec localDec = null;
+		AssertStat assertStat = null;
+		String brk = null;
+		
+		if(checkNextToken(Symbol.IF)) {
+			ifStat = this.ifStat(compilationErrorList);
+		} else if(checkNextToken(Symbol.WHILE)) {
+			whileStat = this.whileStat(compilationErrorList);
+		} else if(checkNextToken(Symbol.RETURN)) {
+			returnStat = this.returnStat(compilationErrorList);
+		} else if(checkNextToken(Symbol.OUT)) {
+			printStat = this.printStat(compilationErrorList);
+		} else if(checkNextToken(Symbol.BREAK)) {
+			this.assertNextToken(Symbol.BREAK);
+			brk = "break";
+		} else if(checkNextToken(Symbol.REPEAT)) {
+			repeatStat = this.repeatStat(compilationErrorList);
+		} else if(checkNextToken(Symbol.VAR)) {
+			localDec = this.localDec(compilationErrorList);
+		} else if(checkNextToken(Symbol.ASSERT)) {
+			assertStat = this.assertStat(compilationErrorList);
+		} else if(!checkNextToken(Symbol.SEMICOLON)) {
+			assignExpr = this.assignExpr(compilationErrorList);
+		}
+		
+		this.assertNextToken(Symbol.SEMICOLON);
+		
+		return new Statement(assignExpr, ifStat, whileStat, returnStat, printStat, repeatStat, localDec, assertStat, brk);
+	}
+
+	private WhileStat whileStat(List<CompilationError> compilationErrorList) {
+		this.assertNextToken(Symbol.WHILE);
+		final Expression expr = this.expression(compilationErrorList);
+		this.assertNextToken(Symbol.LEFTCURBRACKET);
+		final StatementList statList = this.statementList();
+		this.assertNextToken(Symbol.RIGHTCURBRACKET);
+		
+		return new WhileStat(expr, statList);
+	}
+	
+	private StatementList statementList() {
+		
+	}
+	
+	private Term term(List<CompilationError> compilationErrorList) {
+		final SignalFactor signalFactor = this.signalFactor(compilationErrorList);
+		final List<HighOperator> opList = new ArrayList<>();
+		final List<SignalFactor> signalList = new ArrayList<>();
+		
+		while(this.checkNextToken(Symbol.MULT) || this.checkNextToken(Symbol.DIV) || this.checkNextToken(Symbol.AND)) {
+			opList.add(this.highOperator(compilationErrorList));
+			signalList.add(this.signalFactor(compilationErrorList));
+		}
+		
+		return new Term(signalFactor, opList, signalList);
+	}
+	
+	private PrintStat printStat(List<CompilationError> compilationErrorList) {
+		this.assertNextToken(Symbol.OUT);
+		this.assertNextToken(Symbol.DOT);
+		String func = null;
+		if(this.checkNextToken(Symbol.PRINT) || this.checkNextToken(Symbol.PRINTLN)) {
+			lexer.nextToken();
+			func = lexer.getCurrentToken().toString();
+		}
+		final Expression expr = this.expression(compilationErrorList);
+		final List<Expression> exprList = new ArrayList<>();
+		while(checkNextToken(Symbol.COMMA)) {
+			lexer.nextToken();
+			exprList.add(this.expression(compilationErrorList));
+		}
+		
+		return new PrintStat(func, expr, exprList);
+	}
+
+	private IfStat ifStat(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private ReturnStat returnStat(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private RepeatStat repeatStat(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private AssertStat assertStat(List<CompilationError> compilationErrorList) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private void error(String msg) {
@@ -578,39 +573,36 @@ public class Compiler {
 			error(msg);
 		}
 	}
-	// MethodDec ::= “func” IdColon FormalParamDec [ “->” Type ] “{” StatementList “}” 
-	//				 | “func” Id [ “->” Type ] “{” StatementList “}”
-	private void methodDec(final List<CompilationError> compilationErrorList) {
-		assertNextToken(Symbol.FUNC);
-		if ( checkNextToken(Symbol.IDCOLON)) { 
+
+	private void methodDec() {
+		lexer.nextToken();
+		if ( lexer.peek(0).getSymbol() == Token.Symbol.ID ) {
+			// unary method
 			lexer.nextToken();
-			this.formalParamDec(compilationErrorList);
+
 		}
-		else if ( checkNextToken(Symbol.ID) ) {
+		else if ( lexer.peek(0).getSymbol() == Token.Symbol.IDCOLON ) {
 			// keyword method. It has parameters
-			lexer.nextToken();
+
 		}
 		else {
 			error("An identifier or identifer: was expected after 'func'");
 		}
-		if (checkNextToken(Symbol.MINUS_GT) ) {
+		if ( lexer.peek(0).getSymbol() == Token.Symbol.MINUS_GT ) {
 			// method declared a return type
 			lexer.nextToken();
 			type();
 		}
-		assertNextToken(Symbol.LEFTCURBRACKET);
-		statementList();
-		assertNextToken(Symbol.RIGHTCURBRACKET);
-		
-		// return new MethodDec();
-
-	}
-
-	private void statementList() {
-		  // only '}' is necessary in this test
-		while ( lexer.peek(0).getSymbol() != Token.Symbol.RIGHTCURBRACKET && lexer.peek(0).getSymbol() != Token.Symbol.END ) {
-			statement();
+		if ( lexer.peek(0).getSymbol() != Token.Symbol.LEFTCURBRACKET ) {
+			error("'{' expected");
 		}
+		next();
+		statementList();
+		if ( lexer.peek(0).getSymbol() != Token.Symbol.RIGHTCURBRACKET ) {
+			error("'{' expected");
+		}
+		next();
+
 	}
 
 	private void statement() {
@@ -676,94 +668,25 @@ public class Compiler {
 		}
 
 	}
-	// RepeatStat ::= “repeat” StatementList “until” Expression
-	private RepeatStat repeatStat(final List<CompilationError> compilationErrorList) {
-		assertNextToken(Symbol.REPEAT);
-		ArrayList<StatementList> statList = this.statementList();
-		assertNextToken(Symbol.UNTIL);
-		this.expression(compilationErrorList);
-		return new RepeatStat(statList);
-		/*
+
+	private void repeatStat() {
 		next();
 		while ( lexer.peek(0).getSymbol() != Token.Symbol.UNTIL && lexer.peek(0).getSymbol() != Token.Symbol.RIGHTCURBRACKET && lexer.peek(0).getSymbol() != Token.Symbol.END ) {
 			statement();
 		}
 		check(Token.Symbol.UNTIL, "missing keyword 'until'");
-		*/
 	}
 
 	private void breakStat() {
 		next();
 
 	}
-	// ReturnStat ::= “return” Expression
-	private ReturnStats returnStat(final List<CompilationError> compilationErrorList) {
-		assertNextToken(Symbol.RETURN);
-		Expression exp = this.expression(compilationErrorList);
-		return new ReturnStats(exp);
+
+	private void returnStat() {
+		next();
+		expr();
 	}
-	
-	private Signal signal(final List<CompilationError> compilationErrorList) {
-		String sinal = "";
-		if (checkNextToken(Symbol.PLUS) || checkNextToken(Symbol.MINUS)) {
-			lexer.nextToken();
-			sinal = lexer.getCurrentToken().getValue();
-		}
-		return new Signal(sinal);
-	}
-	//  “private”
-	//“public”
-	//“override”
-	//“override” “public”
-	//“final”
-	//“final” “public”
-	//“final” “override”
-	//“final” “override” “public”
-	//“shared” “private”
-	//“shared” “public”
-	private Qualifer qualifer(final List<CompilationError> compilationErrorList) {
-		ArrayList<String> arrListQualifer = new ArrayList<String>();
-		if (checkNextToken(Symbol.PRIVATE)) {
-			lexer.nextToken();
-			arrListQualifer.add(lexer.getCurrentToken().getValue());
-		} else if (checkNextToken(Symbol.PUBLIC)) {
-			lexer.nextToken();
-			arrListQualifer.add(lexer.getCurrentToken().getValue());
-		} else if (checkNextToken(Symbol.OVERRIDE)) {
-			lexer.nextToken();
-			arrListQualifer.add(lexer.getCurrentToken().getValue());
-			if (checkNextToken(Symbol.PUBLIC)) {
-				lexer.nextToken();
-				arrListQualifer.add(lexer.getCurrentToken().getValue());
-			}
-		} else if (checkNextToken(Symbol.FINAL)) {
-			lexer.nextToken();
-			arrListQualifer.add(lexer.getCurrentToken().getValue());
-			if (checkNextToken(Symbol.PUBLIC)) {
-				lexer.nextToken();
-				arrListQualifer.add(lexer.getCurrentToken().getValue());
-			} else if (checkNextToken(Symbol.OVERRIDE)) {
-				lexer.nextToken();
-				arrListQualifer.add(lexer.getCurrentToken().getValue());
-				if (checkNextToken(Symbol.PUBLIC)) {
-					lexer.nextToken();
-					arrListQualifer.add(lexer.getCurrentToken().getValue());
-				}
-			}
-		} else if (checkNextToken(Symbol.SHARED)) {
-			lexer.nextToken();
-			arrListQualifer.add(lexer.getCurrentToken().getValue());
-			if (checkNextToken(Symbol.PUBLIC)) {
-				lexer.nextToken();
-				arrListQualifer.add(lexer.getCurrentToken().getValue());
-			} else if (checkNextToken(Symbol.PRIVATE)) {
-				lexer.nextToken();
-				arrListQualifer.add(lexer.getCurrentToken().getValue());
-			}
-		}
-		
-		return new Qualifer(arrListQualifer);
-	}
+
 	private void whileStat() {
 		next();
 		expr();
@@ -775,23 +698,8 @@ public class Compiler {
 		check(Token.Symbol.RIGHTCURBRACKET, "missing '}' after 'while' body");
 	}
 
-	// IfStat ::= “if” Expression “{” Statement “}” 	[ “else” “{” Statement “}” ]
-	private void ifStat(final List<CompilationError> compilationErrorList) {
-		
-		assertNextToken(Symbol.IF);
-		this.expression(compilationErrorList); // Expression exp = this.expression(compilationErrorList);
-		assertNextToken(Symbol.LEFTCURBRACKET);
-		this.statement();
-		assertNextToken(Symbol.RIGHTCURBRACKET);
-		
-		if (checkNextToken(Symbol.ELSE)) {
-			lexer.nextToken();
-			assertNextToken(Symbol.LEFTCURBRACKET);
-			this.statement();
-			assertNextToken(Symbol.RIGHTCURBRACKET);
-		}
-		
-		/*next();
+	private void ifStat() {
+		next();
 		expr();
 		check(Token.Symbol.LEFTCURBRACKET, "'{' expected after the 'if' expression");
 		next();
@@ -807,17 +715,9 @@ public class Compiler {
 				statement();
 			}
 			check(Token.Symbol.RIGHTCURBRACKET, "'}' was expected");
-		}*/
+		}
 	}
 
-	
-	private LowOperator lowOperator(final List<CompilationError> compilationErrorList) {
-		if (!checkNextToken(Symbol.PLUS) || !checkNextToken(Symbol.MINUS) || !checkNextToken(Symbol.OR)) {
-			this.error("Expected +, - or || ");
-		}
-		lexer.nextToken();
-		return new LowOperator(this.lexer.getCurrentToken().getValue());
-	}
 	/**
 
 	 */
@@ -834,20 +734,16 @@ public class Compiler {
 
 	}
 
-	// FieldDec ::= “var” Type IdList [ “;” ]
-	private FieldDec fieldDec() {
-		if (!checkNextToken(Symbol.VAR)) {
-			this.error("Expected a 'var'");
-		}
+	private void fieldDec() {
 		lexer.nextToken();
-		this.type();
-		if (!checkNextToken(Symbol.ID)) {
+		type();
+		if ( lexer.peek(0).getSymbol() != Token.Symbol.ID ) {
 			this.error("A field name was expected");
 		}
 		else {
-			while ( checkNextToken(Symbol.ID) ) {
+			while ( lexer.peek(0).getSymbol() == Token.Symbol.ID  ) {
 				lexer.nextToken();
-				if ( checkNextToken(Symbol.COMMA) ) {
+				if ( lexer.peek(0).getSymbol() == Token.Symbol.COMMA ) {
 					lexer.nextToken();
 				}
 				else {
@@ -855,7 +751,7 @@ public class Compiler {
 				}
 			}
 		}
-		return new FieldDec();
+
 	}
 
 	private Type type() {
@@ -863,71 +759,36 @@ public class Compiler {
 	}
 
 
-	private void qualifier() {
-		if ( lexer.peek(0).getSymbol() == Token.Symbol.PRIVATE ) {
-			next();
-		}
-		else if ( lexer.peek(0).getSymbol() == Token.Symbol.PUBLIC ) {
-			next();
-		}
-		else if ( lexer.peek(0).getSymbol() == Token.Symbol.OVERRIDE ) {
-			next();
-			if ( lexer.peek(0).getSymbol() == Token.Symbol.PUBLIC ) {
-				next();
-			}
-		}
-		else if ( lexer.peek(0).getSymbol() == Token.Symbol.FINAL ) {
-			next();
-			if ( lexer.peek(0).getSymbol() == Token.Symbol.PUBLIC ) {
-				next();
-			}
-			else if ( lexer.peek(0).getSymbol() == Token.Symbol.OVERRIDE ) {
-				next();
-				if ( lexer.peek(0).getSymbol() == Token.Symbol.PUBLIC ) {
-					next();
-				}
-			}
-		}
+	private Qualifier qualifier() {
+		return null;
 	}
-	// AssertStat ::= “assert” Expression “,” StringValue
-	private AssertStat assertStat(List<CompilationError> compilationErrorList) {
+	/**
+	 * change this method to 'private'.
+	 * uncomment it
+	 * implement the methods it calls
+	 */
+	public Statement assertStat() {
 
-		assertNextToken(Symbol.ASSERT);
 		lexer.nextToken();
 		int lineNumber = lexer.peek(0).getLine();
-		this.expression(compilationErrorList);
-		if ( !checkNextToken(Symbol.COMMA) ) {
+		expr();
+		if ( lexer.peek(0).getSymbol() != Token.Symbol.COMMA ) {
 			this.error("',' expected after the expression of the 'assert' statement");
 		}
 		lexer.nextToken();
-		if ( !checkNextToken(Symbol.LITERALSTRING) ) { 
+		if ( lexer.peek(0).getSymbol() != Token.Symbol.LITERALSTRING ) {
 			this.error("A literal string expected after the ',' of the 'assert' statement");
 		}
-		String message = lexer.getCurrentToken().getValue();
-		return new AssertStat(message);
-	}
-
-	private BooleanValue booleanValue() {
-		
-		if (!checkNextToken(Symbol.TRUE) || !checkNextToken(Symbol.FALSE)){
-			this.error("Expected true or false");
-		}
+		String message = lexer.peek(0).getValue();
 		lexer.nextToken();
-		return new BooleanValue(this.lexer.getCurrentToken().getValue());
+		if ( lexer.peek(0).getSymbol() == Token.Symbol.SEMICOLON )
+			lexer.nextToken();
+
+		return null;
 	}
 
 
-	private LiteralInt literalInt() {
 
-		LiteralInt e = null;
-
-		// the number value is stored in lexer.getToken().value as an object of
-		// Integer.
-		// Method intValue returns that value as an value of type int.
-		int value = Integer.parseInt(lexer.peek(0).getValue());
-		lexer.nextToken();
-		return new LiteralInt(value);
-	}
 
 	private static boolean startExpr(Token.Symbol token) {
 

@@ -2,9 +2,9 @@ package ast;
 
 import java.util.List;
 
-public class SimpleExpression extends ASTElement {
+public class Term extends ASTElement {
 
-	public SimpleExpression(SumSubExpression sumSubExpr, List<SumSubExpression> sumSubExpressionList) {
+	public Term(SignalFactor signalFactor, List<HighOperator> opList, List<SignalFactor> signalList) {
 		// TODO Auto-generated constructor stub
 	}
 
