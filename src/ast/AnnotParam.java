@@ -1,12 +1,16 @@
-package ast;
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
 
-import java.util.List;
+package ast;
 
 public class AnnotParam extends ASTElement {
 
 	public AnnotParam(String value) {
 		// TODO Auto-generated constructor stub
 	}
+
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub

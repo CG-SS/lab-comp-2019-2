@@ -5,9 +5,9 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
+public class Id extends ASTElement {
 
-	public ObjectCreation(String idName) {
+	public Id(String value) {
 		// TODO Auto-generated constructor stub
 	}
 

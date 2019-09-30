@@ -5,9 +5,9 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
+public class WhileStat extends ASTElement {
 
-	public ObjectCreation(String idName) {
+	public WhileStat(Expression expr, StatementList statList) {
 		// TODO Auto-generated constructor stub
 	}
 

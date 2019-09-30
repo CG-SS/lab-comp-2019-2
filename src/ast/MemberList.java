@@ -5,9 +5,9 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
+public class MemberList extends ASTElement {
 
-	public ObjectCreation(String idName) {
+	public MemberList(Qualifier qualifier, Member member) {
 		// TODO Auto-generated constructor stub
 	}
 

@@ -1,8 +1,13 @@
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 package ast;
 
 public class ClassDec extends ASTElement {
 
-	public ClassDec() {
+	public ClassDec(boolean openClassBol, boolean extendsClassBol, String className) {
 		// TODO Auto-generated constructor stub
 	}
 

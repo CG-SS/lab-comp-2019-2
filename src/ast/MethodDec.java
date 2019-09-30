@@ -5,11 +5,7 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
-
-	public ObjectCreation(String idName) {
-		// TODO Auto-generated constructor stub
-	}
+public class MethodDec extends ASTElement {
 
 	@Override
 	public void genJava(PW pw) {

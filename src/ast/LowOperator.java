@@ -5,9 +5,9 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
+public class LowOperator extends ASTElement {
 
-	public ObjectCreation(String idName) {
+	public LowOperator(String value) {
 		// TODO Auto-generated constructor stub
 	}
 

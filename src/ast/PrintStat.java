@@ -5,9 +5,11 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
+import java.util.List;
 
-	public ObjectCreation(String idName) {
+public class PrintStat extends ASTElement {
+
+	public PrintStat(String func, Expression expr, List<Expression> exprList) {
 		// TODO Auto-generated constructor stub
 	}
 

@@ -5,9 +5,11 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
+import java.util.List;
 
-	public ObjectCreation(String idName) {
+public class Term extends ASTElement {
+
+	public Term(SignalFactor signalFactor, List<HighOperator> opList, List<SignalFactor> signalList) {
 		// TODO Auto-generated constructor stub
 	}
 

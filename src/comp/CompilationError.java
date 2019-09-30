@@ -1,9 +1,14 @@
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 package comp;
 
 /**
  * a compilation error
  * 
-   @author José
+   @author Josï¿½
  */
 public class CompilationError {
 

@@ -1,3 +1,8 @@
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 package comp;
 
 public class CompilerOptions {

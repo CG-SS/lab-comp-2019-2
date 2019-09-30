@@ -5,9 +5,9 @@
 
 package ast;
 
-public class ObjectCreation extends ASTElement {
+public class SignalFactor extends ASTElement {
 
-	public ObjectCreation(String idName) {
+	public SignalFactor(Signal signal, Factor factor) {
 		// TODO Auto-generated constructor stub
 	}
 

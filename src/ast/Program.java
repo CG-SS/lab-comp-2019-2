@@ -1,13 +1,18 @@
 package ast;
 
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 import java.util.*;
 import comp.CompilationError;
 
 public class Program {
 
-	public Program(ArrayList<TypeCianetoClass> classList, ArrayList<MetaobjectAnnotation> metaobjectCallList, 
+	public Program(ArrayList<MetaobjectAnnotation> metaobjectCallList, 
 			       ArrayList<CompilationError> compilationErrorList) {
-		this.classList = classList;
+		
 		this.metaobjectCallList = metaobjectCallList;
 		this.compilationErrorList = compilationErrorList;
 	}
@@ -17,10 +22,6 @@ public class Program {
 	}
 
 	public void genC(PW pw) {
-	}
-	
-	public ArrayList<TypeCianetoClass> getClassList() {
-		return classList;
 	}
 
 
@@ -38,7 +39,6 @@ public class Program {
 	}
 
 	
-	private ArrayList<TypeCianetoClass> classList;
 	private ArrayList<MetaobjectAnnotation> metaobjectCallList;
 	
 	ArrayList<CompilationError> compilationErrorList;

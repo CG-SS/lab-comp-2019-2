@@ -1,5 +1,6 @@
-/**
-
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
  */
 package ast;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * end <br>
  * </code>
  *
-   @author José
+   @author Josï¿½
 
  */
 public class MetaobjectAnnotation {

@@ -1,8 +1,13 @@
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 package ast;
 
 public class CompStatement extends ASTElement {
 
-	public CompStatement() {
+	public CompStatement(StatementList statList) {
 		// TODO Auto-generated constructor stub
 	}
 

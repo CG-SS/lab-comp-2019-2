@@ -1,22 +1,20 @@
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 package ast;
 
-abstract public class Type {
+public class Type extends ASTElement{
 
-    public Type( String name ) {
-        this.name = name;
-    }
+	public Type(Id id, BasicType basicType) {
+		// TODO Auto-generated constructor stub
+	}
 
-    public static Type booleanType = new TypeBoolean();
-    public static Type intType = new TypeInt();
-    public static Type stringType = new TypeString();
-    public static Type undefinedType = new TypeUndefined();
-    public static Type nullType = new TypeNull();
-
-    public String getName() {
-        return name;
-    }
-
-    abstract public String getCname();
-
-    private String name;
+	@Override
+	public void genJava(PW pw) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
