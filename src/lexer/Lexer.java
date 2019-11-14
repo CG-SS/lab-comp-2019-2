@@ -1,3 +1,8 @@
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 package lexer;
 
 import java.util.ArrayList;
@@ -5,28 +10,50 @@ import java.util.Hashtable;
 import java.util.List;
 
 import comp.ErrorSignaller;
+import lexer.Token.Symbol;
 
 public class Lexer {
 	
-	private final List<Token> tokenList;
+	private final char[] inputAr;
+	private final ErrorSignaller error;
 	private int tokenPos;
 	private int lineNumber;
-	private ErrorSignaller error;
-
-    public Lexer(final char []input, final ErrorSignaller error ) {
-          // add an end-of-file label to make it easy to do the lexer
-        input[input.length - 1] = '\0';
-          // number of the current line
-        tokenPos = 0;
+	private List<Token> tokenList;
+	
+	public Lexer(final char[] input, final ErrorSignaller error) {
+		input[input.length - 1] = '\0';
+		this.inputAr = input;
+		this.error = error;
+		tokenPos = 0;
         lineNumber = 1;
-        this.error = error;
+        this.tokenize();
+	}
+	
+	public List<Token> getAllAnnots(){
+		final List<Token> annotList = new ArrayList<>();
+		int line = 1;
+		
+		for(final char ch : inputAr) {
+			if (ch == '\n')
+				line++;
+			
+			if(ch == '@') {
+				annotList.add(new Token(Symbol.ANNOT, line, ""));
+			}
+		}
+		
+		return annotList;
+	}
+
+    private void tokenize() {
         tokenList = new ArrayList<>();
         
         Token tok;
         tokenList.add(new Token(Token.Symbol.INIT, 0, ""));
-        while((tok = parseToken(input)).getSymbol() != Token.Symbol.EOF) {
+        while((tok = parseToken(inputAr)).getSymbol() != Token.Symbol.EOF) {
         	tokenList.add(tok);
         }
+        tokenList.add(new Token(Token.Symbol.EOF, tokenList.get(tokenList.size() - 1).getLine() + 1, ""));
         tokenPos = 0;
       }
     
@@ -35,7 +62,7 @@ public class Lexer {
     }
 
 
-    private static final int MaxValueInteger = 32767;
+    private static final int MaxValueInteger = 2147483647;
       // contains the keywords
     static private Hashtable<String, Token.Symbol> keywordsTable;
 
@@ -70,6 +97,8 @@ public class Lexer {
     private Token parseToken(final char[] input) {
         char ch;
         
+        //System.out.println("Parsing " + input[tokenPos]);
+        
         while (  (ch = input[tokenPos]) == ' ' || ch == '\r' ||
                  ch == '\t' || ch == '\n')  {
             // count the number of lines
@@ -97,8 +126,9 @@ public class Lexer {
                 tokenPos++;
              }
              if ( ch == '\0' )
-                error.showError( "Comment opened and not closed",
-                      getLine(posStartComment), lineNumberStartComment);
+            	 return new Token(Token.Symbol.ERROR, lineNumberStartComment, "Comment opened and not closed");
+                /*error.showError( "Comment opened and not closed",
+                      getLine(posStartComment), lineNumberStartComment);*/
              else
                 tokenPos += 2;
              return parseToken(input);
@@ -141,10 +171,12 @@ public class Lexer {
                 try {
                    numberValue = Integer.valueOf(number.toString()).intValue();
                 } catch ( NumberFormatException e ) {
-                   error.showError("Number out of limits");
+                	return new Token(Token.Symbol.ERROR, lineNumber, "Number out of limits");
+                   //error.showError("Number out of limits");
                 }
                 if ( numberValue > MaxValueInteger )
-                   error.showError("Number out of limits");
+                	return new Token(Token.Symbol.ERROR, lineNumber, "Number out of limits");
+                   //error.showError("Number out of limits");
                 
                 return new Token(Token.Symbol.LITERALINT, lineNumber, number.toString());
             }
@@ -215,16 +247,17 @@ public class Lexer {
                          return new Token(Token.Symbol.AND, lineNumber, "");
                       }
                       else
-                        error.showError("& expected");
-                      break;
+                    	  return new Token(Token.Symbol.ERROR, lineNumber, "& expected");
+                        //error.showError("& expected");
+                      
                     case '|' :
                       if ( input[tokenPos] == '|' ) {
                          tokenPos++;
                          return new Token(Token.Symbol.OR, lineNumber, "");
                       }
                       else
-                        error.showError("| expected");
-                      break;
+                    	  return new Token(Token.Symbol.ERROR, lineNumber, "| expected");
+                        //error.showError("| expected");
                     case '{' :
                     	return new Token(Token.Symbol.LEFTCURBRACKET, lineNumber, "");
                     case '}' :
@@ -236,11 +269,13 @@ public class Lexer {
                     		++tokenPos;
                     	}
                     	if ( metaobjectName.length() == 0 )
-                    		error.showError("Identifier expected after '@'");
+                    		return new Token(Token.Symbol.ERROR, lineNumber, "Identifier expected after '@'");
+                    		//error.showError("Identifier expected after '@'");
                     	return new Token(Token.Symbol.ANNOT, lineNumber, metaobjectName);
                     case '_' :
-                      error.showError("'_' cannot start an indentifier");
-                      break;
+                    	return new Token(Token.Symbol.ERROR, lineNumber, "'_' cannot start an indentifier");
+                      //error.showError("'_' cannot start an indentifier");
+                      
                     case '"' :
                        StringBuffer s = new StringBuffer();
                        String literalStringValue;
@@ -266,8 +301,9 @@ public class Lexer {
                              }
 
                        if ( input[tokenPos] == '\0' || input[tokenPos] == '\n' ) {
-                          error.showError("Nonterminated string");
-                          literalStringValue = "";
+                    	   literalStringValue = "";
+                    	   return new Token(Token.Symbol.ERROR, lineNumber, "Nonterminated string");
+                          //error.showError("Nonterminated string");
                        }
                        else {
                           tokenPos++;
@@ -276,24 +312,39 @@ public class Lexer {
                        
                        return new Token(Token.Symbol.LITERALSTRING, lineNumber, literalStringValue);
                     default :
-                      error.showError("Invalid Character: '" + ch + "'", false);
+                    	//System.out.println("Token pos " + tokenPos);
+                    	return new Token(Token.Symbol.ERROR, lineNumber, "Invalid character: '" + ch + "'");
+                      //error.showError("Invalid Character: '" + ch + "'", this.getLine(tokenPos), new Token(Token.Symbol.LITERALSTRING, lineNumber, ""));
                 }
             }
           }
         
-        return new Token(null, null, null);
+        //return new Token(null, null, null);
     }
 
-    private String getLine( int index ) {
+    public String getLine( final int line ) {
         // get the line that contains input[index]. Assume input[index] is at a token, not
         // a white space or newline
-
-    	if(index < 0)
-        	return "-1";
-        if(index > tokenList.size())
-        	return tokenList.get(tokenList.size()).getLine().toString();
+    	if(line < 0)
+    		return "";
     	
-    	return tokenList.get(index).getLine().toString();
+    	final StringBuilder sb = new StringBuilder();
+    	
+    	int newline = 1;
+    	for(final char ch : inputAr) {
+    		if(ch == '\n') {
+    			newline++;
+    			continue;
+    		}
+    		
+    		if(newline == line) {
+    			sb.append(ch);
+    		} else if (newline > line) {
+    			break;
+    		}
+    	}
+    	
+    	return sb.toString();
     }
 
 }

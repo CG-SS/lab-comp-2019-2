@@ -5,9 +5,10 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+public class PrimaryExprSelf extends PrimaryExpr {
 
-	public ReturnStat(Expression exp) {
+	public PrimaryExprSelf(Type type) {
+		super(type);
 		// TODO Auto-generated constructor stub
 	}
 

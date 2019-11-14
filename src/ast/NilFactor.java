@@ -5,16 +5,21 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+import lexer.Token.Symbol;
 
-	public ReturnStat(Expression exp) {
+public class NilFactor extends Factor {
+
+	public NilFactor() {
+		super(new Type(Symbol.NIL.toString()));
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
+	
+	
 }

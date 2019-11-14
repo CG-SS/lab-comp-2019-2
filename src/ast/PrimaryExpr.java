@@ -5,16 +5,11 @@
 
 package ast;
 
-public class PrimaryExpr extends ASTElement {
+public abstract class PrimaryExpr extends Factor {
 
-	public PrimaryExpr(ExpressionList expList, String idColon, String idFirst, String idSecond) {
+	public PrimaryExpr(Type type) {
+		super(type);
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

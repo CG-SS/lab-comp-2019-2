@@ -1,17 +1,70 @@
+/*
+ * Cristiano Guilherme - 609803
+ * Daniel Davoli       - 610372
+ */
+
 package lexer;
 
 public class Token {
 
 	public enum Symbol {
-		AND("&&"), ANNOT("~annotation"), ASSERT("assert"), ASSIGN("="), BOOLEAN("Boolean"), BREAK("break"),
-		CLASS("class"), COMMA(","), DIV("/"), DOT("."), ELSE("else"), END("end"), EOF("~eof"), EQ("=="),
-		EXTENDS("extends"), FALSE("false"), FINAL("final"), FUNC("func"), GE(">="), GT(">"), ID("~ident"),
-		IDCOLON("~ident:"), IF("if"), INT("Int"), LE("<="), LEFTCURBRACKET("{"), LEFTPAR("("), LITERALINT("~number"),
-		LITERALSTRING("~literalString"), LT("<"), MINUS("-"), MINUS_GT("->"), MULT("*"), NEQ("!="), NEW("new"),
-		NOT("!"), NULL("nil"), OR("||"), OVERRIDE("override"), PLUS("+"), PRIVATE("private"), PUBLIC("public"),
-		READ("read"), REPEAT("repeat"), RETURN("return"), RIGHTCURBRACKET("}"), RIGHTPAR(")"), SELF("self"),
-		SEMICOLON(";"), STRING("String"), SUPER("super"), TRUE("true"), UNTIL("until"), VAR("var"), VOID("void"),
-		WHILE("while"), WRITE("write"), WRITELN("writeln"), INIT("~init"), PLUSPLUS("++"), OUT("Out"), PRINT("print:"), PRINTLN("println:"), OPEN("open"), IN("In"), READINT("readInt"), READSTRING("readString");
+		AND("&&"),
+	    ANNOT("~annotation"),
+	    ASSERT("assert"),
+	    ASSIGN("="),
+	    BOOLEAN("Boolean"),
+	    BREAK("break"),
+	    CLASS("class"),
+	    COMMA(","),
+	    DIV("/"),
+	    DOT("."),
+	    ELSE("else"),
+	    END("end"),
+	    EOF("~eof"),
+	    EQ("=="),
+	    EXTENDS("extends"),
+	    ERROR("~error"),
+	    FALSE("false"),
+	    FINAL("final"),
+	    FUNC("func"),
+	    GE(">="),
+	    GT(">"),
+	    ID("~ident"),
+	    IDCOLON("~ident:"),
+	    IF("if"),
+	    INT("Int"),
+	    INIT("~init"),
+	    LE("<="),
+	    LEFTCURBRACKET("{"),
+	    LEFTPAR("("),
+	    LITERALINT("~number"),
+	    LITERALSTRING("~literalString"),
+	    LT("<"),
+	    MINUS("-"),
+	    MINUS_GT("->"),
+	    MULT("*"),
+	    NEQ("!="),
+	    NIL("nil"),
+	    NOT("!"),
+	    OR("||"),
+	    OVERRIDE("override"),
+	    PLUS("+"),
+	    PLUSPLUS("++"),
+	    PRIVATE("private"),
+	    PUBLIC("public"),
+	    REPEAT("repeat"),
+	    RETURN("return"),
+	    RIGHTCURBRACKET("}"),
+	    RIGHTPAR(")"),
+	    SELF("self"),
+	    SHARED("shared"),
+	    SEMICOLON(";"),
+	    STRING("String"),
+	    SUPER("super"),
+	    TRUE("true"),
+	    UNTIL("until"),
+	    VAR("var"),
+	    WHILE("while");
 
 		private final String name;
 

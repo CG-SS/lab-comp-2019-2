@@ -5,16 +5,19 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+public class ExpressionFactor extends Factor {
 
-	public ReturnStat(Expression exp) {
+	public ExpressionFactor(Expression expr) {
+		super(expr.getType());
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
+	
+	
 }

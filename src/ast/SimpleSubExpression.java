@@ -5,9 +5,12 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+import java.util.List;
 
-	public ReturnStat(Expression exp) {
+public class SimpleSubExpression extends SumSubExpression {
+
+	public SimpleSubExpression(Term term, List<LowOperator> opList, List<Term> termList, Type type) {
+		super(type);
 		// TODO Auto-generated constructor stub
 	}
 

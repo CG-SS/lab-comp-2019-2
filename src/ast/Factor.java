@@ -5,17 +5,16 @@
 
 package ast;
 
-public class Factor extends ASTElement {
+public abstract class Factor extends ASTElement {
+	
+	private final Type type;
 
-	public Factor(BasicValue basicValue, Expression expression, Factor factor, ObjectCreation objCreation,
-			PrimaryExpr primaryExpr, String nil) {
+	public Factor(Type type) {
 		// TODO Auto-generated constructor stub
+		this.type = type;
 	}
 
-	@Override
-	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+	public Type getType() {
+		return type;
 	}
-
 }

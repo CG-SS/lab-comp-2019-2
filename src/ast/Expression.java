@@ -5,16 +5,16 @@
 
 package ast;
 
-public class Expression extends ASTElement {
+public abstract class Expression extends ASTElement {
+	
+	private final Type type;
 
-	public Expression(SimpleExpression simpleExpr, Relation rel, SimpleExpression relExpr) {
+	public Expression(Type type) {
 		// TODO Auto-generated constructor stub
+		this.type = type;
 	}
-
-	@Override
-	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+	
+	public Type getType() {
+		return type;
 	}
-
 }

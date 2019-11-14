@@ -5,9 +5,9 @@
 
 package ast;
 
-public class AssertStat extends ASTElement {
+public class AssertStat extends Statement {
 
-	public AssertStat(String message) {
+	public AssertStat(Expression expr, String message) {
 		// TODO Auto-generated constructor stub
 	}
 

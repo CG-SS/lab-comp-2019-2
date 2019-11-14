@@ -8,15 +8,21 @@ package ast;
 import java.util.List;
 
 public class IdList extends ASTElement {
+	
+	private final List<Id> idList;
 
 	public IdList(List<Id> idList) {
-		// TODO Auto-generated constructor stub
+		this.idList = idList;
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public List<Id> getIdList() {
+		return idList;
 	}
 
 }

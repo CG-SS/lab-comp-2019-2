@@ -5,16 +5,12 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
-
-	public ReturnStat(Expression exp) {
-		// TODO Auto-generated constructor stub
-	}
+public class BreakStat extends Statement {
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

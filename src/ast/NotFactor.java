@@ -5,16 +5,17 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+public class NotFactor extends Factor {
 
-	public ReturnStat(Expression exp) {
+	public NotFactor(Factor factor) { // TODO bool
+		super(factor.getType());
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

@@ -5,10 +5,11 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+public class PrimaryExprSuperId extends PrimaryExpr {
 
-	public ReturnStat(Expression exp) {
+	public PrimaryExprSuperId(String id, Type type) {
 		// TODO Auto-generated constructor stub
+		super(type);
 	}
 
 	@Override

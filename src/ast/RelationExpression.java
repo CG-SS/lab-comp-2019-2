@@ -5,16 +5,17 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+public class RelationExpression extends Expression {
 
-	public ReturnStat(Expression exp) {
+	public RelationExpression(SimpleExpression leftSimpleExpr, Relation relation, SimpleExpression rightSimpleExpr, Type type) {
+		super(type);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

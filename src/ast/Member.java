@@ -5,12 +5,28 @@
 
 package ast;
 
-public class Member extends ASTElement {
-
-	@Override
-	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+public abstract class Member extends ASTElement {
+	
+	private final String id;
+	private final Qualifier qualifier;
+	private final Type type;
+	
+	public Member(String id, Qualifier qualifier, Type type) {
+		super();
+		this.id = id;
+		this.qualifier = qualifier;
+		this.type = type;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public Qualifier getQualifier() {
+		return qualifier;
+	}
+
+	public Type getType() {
+		return type;
+	}
 }

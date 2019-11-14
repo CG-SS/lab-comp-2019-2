@@ -5,9 +5,11 @@
 
 package ast;
 
+import java.util.List;
+
 public class CompStatement extends ASTElement {
 
-	public CompStatement(StatementList statList) {
+	public CompStatement(List<Statement> statList) {
 		// TODO Auto-generated constructor stub
 	}
 

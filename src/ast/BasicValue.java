@@ -5,18 +5,22 @@
 
 package ast;
 
-public class BasicValue extends ASTElement {
+public class BasicValue extends Factor {
 	
 	private final String value;
 
-	public BasicValue(String value) {
+	public BasicValue(String value, Type type) {
+		super(type);
 		this.value = value;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		if(this.getType().getId().equals("String")) {
+			pw.print("\"" + value + "\"");
+		} else {
+			pw.print(value);
+		}
 	}
 
 }

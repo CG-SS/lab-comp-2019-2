@@ -5,18 +5,11 @@
 
 package ast;
 
-import java.util.List;
+public abstract class SimpleExpression extends Expression {
 
-public class SimpleExpression extends ASTElement {
-
-	public SimpleExpression(SumSubExpression sumSubExpr, List<SumSubExpression> sumSubExpressionList) {
+	public SimpleExpression(Type type) {
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		super(type);
 	}
 
 }

@@ -7,23 +7,18 @@ package ast;
 
 import java.util.List;
 
-public class StatementList extends ASTElement {
-	
-	private final List<Statement> statList;
+public class SumSimpleExpression extends SimpleExpression {
 
-	public StatementList(List<Statement> statList) {
+	public SumSimpleExpression(SumSubExpression sumSubExpr, List<SumSubExpression> sumSubExpressionList, Type type) {
+		super(type);
 		// TODO Auto-generated constructor stub
-		this.statList = statList;
+		
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	public List<Statement> getStatList(){
-		return statList;
 	}
 
 }

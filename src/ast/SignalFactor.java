@@ -5,16 +5,27 @@
 
 package ast;
 
-public class SignalFactor extends ASTElement {
+public class SignalFactor extends Term {
+	
+	private final Factor factor;
+	private final Signal signal;
 
-	public SignalFactor(Signal signal, Factor factor) {
+	public SignalFactor(Signal signal, Factor factor, Type type) {
+		super(type);
 		// TODO Auto-generated constructor stub
+		this.factor = factor;
+		this.signal = signal;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		if(signal != null) {
+			signal.genJava(pw);
+		}
+		factor.genJava(pw);
 	}
 
+	public Factor getFactor() {
+		return factor;
+	}
 }

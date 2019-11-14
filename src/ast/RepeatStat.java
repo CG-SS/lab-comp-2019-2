@@ -5,9 +5,9 @@
 
 package ast;
 
-public class RepeatStat extends ASTElement {
+public class RepeatStat extends Statement {
 
-	public RepeatStat(StatementList statList) {
+	public RepeatStat(StatementList statList, Expression expr) {
 		// TODO Auto-generated constructor stub
 	}
 

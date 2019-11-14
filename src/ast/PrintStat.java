@@ -7,16 +7,31 @@ package ast;
 
 import java.util.List;
 
-public class PrintStat extends ASTElement {
+public class PrintStat extends Statement {
+	
+	private final boolean newline;
+	private final Expression expr;
+	private final List<Expression> exprList;
 
-	public PrintStat(String func, Expression expr, List<Expression> exprList) {
-		// TODO Auto-generated constructor stub
+	public PrintStat(boolean newline, Expression expr, List<Expression> exprList) {
+		this.newline = newline;
+		this.expr = expr;
+		this.exprList = exprList;
 	}
+
+
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		String printFunc;
+		if(newline)
+			printFunc = "println";
+		else
+			printFunc = "print";
+		
+		pw.print("System.out." + printFunc + "(");
+		expr.genJava(pw);
+		pw.print(");");
 	}
 
 }

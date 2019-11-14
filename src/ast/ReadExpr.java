@@ -5,7 +5,14 @@
 
 package ast;
 
-public class ReadExpr extends ASTElement {
+import lexer.Token;
+
+public class ReadExpr extends PrimaryExpr {
+
+	public ReadExpr(Token read, Type type) {
+		super(type);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void genJava(PW pw) {

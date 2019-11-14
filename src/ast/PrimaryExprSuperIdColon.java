@@ -5,16 +5,19 @@
 
 package ast;
 
-public class ReturnStat extends Statement {
+import java.util.List;
 
-	public ReturnStat(Expression exp) {
+public class PrimaryExprSuperIdColon extends PrimaryExpr {
+
+	public PrimaryExprSuperIdColon(String idColonName, List<Expression> exprList, Type type) {
 		// TODO Auto-generated constructor stub
+		super(type);
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

@@ -6,7 +6,9 @@
 package comp;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+
 import lexer.Lexer;
+import lexer.Token;
 
 public class ErrorSignaller {
 
@@ -33,6 +35,9 @@ public class ErrorSignaller {
         showError( strMessage, false);
     }
 
+    public void showError(String strMessage, String line, Token token) {
+    	this.showError(strMessage, line, token.getLine().intValue());
+    }
 
     public void showError( String strMessage, boolean goPreviousToken ) {
         // is goPreviousToken is true, the error is signalled at the line of the
@@ -41,7 +46,7 @@ public class ErrorSignaller {
            showError( strMessage, lexer.peek(-1).getLine().toString(),
                  lexer.peek(-1).getLine().intValue() );
         else
-           showError( strMessage, lexer.peek(0).getLine().toString(), lexer.peek(0).getLine().intValue() );
+           showError( strMessage, lexer.getLine(lexer.peek(0).getLine()), lexer.peek(0).getLine().intValue() );
     }
 
 
@@ -53,6 +58,7 @@ public class ErrorSignaller {
       foundCompilerError = true;
       CompilationError newError = new CompilationError(errorMessage, lineNumber, lineWithError);
       compilationErrorList.add(newError);
+      
       throw new CompilerError(errorMessage);
    }
 

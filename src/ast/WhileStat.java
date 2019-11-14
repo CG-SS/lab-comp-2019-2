@@ -5,16 +5,22 @@
 
 package ast;
 
-public class WhileStat extends ASTElement {
+public class WhileStat extends Statement {
+	
+	private final Expression expr;
+	private final StatementList statList;
 
 	public WhileStat(Expression expr, StatementList statList) {
-		// TODO Auto-generated constructor stub
+		this.expr = expr;
+		this.statList = statList;
 	}
+
+
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

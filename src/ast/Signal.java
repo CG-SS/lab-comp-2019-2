@@ -5,9 +5,11 @@
 
 package ast;
 
+import lexer.Token.Symbol;
+
 public class Signal extends ASTElement {
 
-	public Signal(String sinal) {
+	public Signal(Symbol signal) {
 		// TODO Auto-generated constructor stub
 	}
 

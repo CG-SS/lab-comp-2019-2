@@ -5,18 +5,11 @@
 
 package ast;
 
-import java.util.List;
-
-public class Term extends ASTElement {
-
-	public Term(SignalFactor signalFactor, List<HighOperator> opList, List<SignalFactor> signalList) {
+public abstract class Term extends SumSubExpression {
+	
+	public Term(Type type) {
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		super(type);
 	}
 
 }

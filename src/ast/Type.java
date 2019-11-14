@@ -6,15 +6,26 @@
 package ast;
 
 public class Type extends ASTElement{
+	
+	private final String id;
 
-	public Type(Id id, BasicType basicType) {
+	public Type(String id) {
+		this.id = id;
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-		
+		if(id.equals("Int")) {
+			pw.printIdent("int");
+		} else if(id.equals("Boolean")) {
+			pw.printIdent("boolean");
+		} else {
+			pw.printIdent(id);
+		}
 	}
 	
+	public String getId() {
+		return id;
+	}
 }

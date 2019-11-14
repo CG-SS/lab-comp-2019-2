@@ -5,16 +5,25 @@
 
 package ast;
 
+import lexer.Token.Symbol;
+
 public class HighOperator extends ASTElement {
 
-	public HighOperator(String string) {
+	private final Symbol symbol;
+	
+	public HighOperator(final Symbol symbol) {
 		// TODO Auto-generated constructor stub
+		this.symbol = symbol;
 	}
 
 	@Override
 	public void genJava(PW pw) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public Symbol getSymbol() {
+		return symbol;
 	}
 
 }
