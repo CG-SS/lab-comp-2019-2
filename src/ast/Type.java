@@ -17,11 +17,11 @@ public class Type extends ASTElement{
 	@Override
 	public void genJava(PW pw) {
 		if(id.equals("Int")) {
-			pw.printIdent("int");
+			pw.print("int");
 		} else if(id.equals("Boolean")) {
-			pw.printIdent("boolean");
+			pw.print("boolean");
 		} else {
-			pw.printIdent(id);
+			pw.print(id);
 		}
 	}
 	

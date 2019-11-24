@@ -29,9 +29,19 @@ public class PrintStat extends Statement {
 		else
 			printFunc = "print";
 		
+		pw.printIdent("");
 		pw.print("System.out." + printFunc + "(");
 		expr.genJava(pw);
-		pw.print(");");
+		pw.println(");");
+		
+		if(exprList != null) {
+			for(final Expression e : exprList) {
+				pw.printIdent("");
+				pw.print("System.out." + printFunc + "(");
+				e.genJava(pw);
+				pw.println(");");
+			}
+		}
 	}
 
 }

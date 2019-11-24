@@ -20,6 +20,7 @@ public class LocalDec extends Statement {
 
 	@Override
 	public void genJava(PW pw) {
+		pw.printIdent("");
 		type.genJava(pw);
 		pw.print(" ");
 		for(int i = 0; i < idList.size(); i++) {

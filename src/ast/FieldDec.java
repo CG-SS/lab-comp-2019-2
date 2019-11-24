@@ -13,7 +13,10 @@ public class FieldDec extends Member {
 
 	@Override
 	public void genJava(PW pw) {
-		pw.printlnIdent("private " + this.getType().getId() + " " + this.getId() + ";");
+		pw.printIdent("");
+		pw.print("private ");
+		this.getType().genJava(pw);
+		pw.println(" " + this.getId() + ";");
 	}
 
 	

@@ -19,7 +19,7 @@ public class PrimaryExprDoubleId extends PrimaryExpr {
 
 	@Override
 	public void genJava(PW pw) {
-		pw.println(firstId + "." + secondId + "();");
+		pw.print(firstId + "." + secondId + "()");
 	}
 
 }

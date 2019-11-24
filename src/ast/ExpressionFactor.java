@@ -7,15 +7,18 @@ package ast;
 
 public class ExpressionFactor extends Factor {
 
+	final Expression expr;
+	
 	public ExpressionFactor(Expression expr) {
 		super(expr.getType());
-		// TODO Auto-generated constructor stub
+		this.expr = expr;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-		
+		pw.print("(");
+		expr.genJava(pw);
+		pw.print(")");
 	}
 
 	

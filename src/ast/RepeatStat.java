@@ -6,15 +6,28 @@
 package ast;
 
 public class RepeatStat extends Statement {
+	
+	private final StatementList statList;
+	private final Expression expr;
 
 	public RepeatStat(StatementList statList, Expression expr) {
-		// TODO Auto-generated constructor stub
+		this.statList = statList;
+		this.expr = expr;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.printIdent("");
+		pw.println("do {");
+		pw.add();
+		statList.genJava(pw);
+		pw.sub();
+		pw.printIdent("");
+		pw.println("}");
+		pw.printIdent("");
+		pw.print("while (!(");
+		expr.genJava(pw);
+		pw.println("));");
 	}
 
 }

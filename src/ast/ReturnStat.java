@@ -6,15 +6,19 @@
 package ast;
 
 public class ReturnStat extends Statement {
+	
+	private final Expression expr;
 
 	public ReturnStat(Expression exp) {
-		// TODO Auto-generated constructor stub
+		this.expr = exp;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.printIdent("");
+		pw.print("return ");
+		expr.genJava(pw);
+		pw.println(";");
 	}
 
 }

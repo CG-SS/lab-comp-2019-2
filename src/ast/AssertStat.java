@@ -6,15 +6,23 @@
 package ast;
 
 public class AssertStat extends Statement {
+	
+	private final Expression expr;
+	private final String message;
+
+	
 
 	public AssertStat(Expression expr, String message) {
-		// TODO Auto-generated constructor stub
+		this.expr = expr;
+		this.message = message;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.printIdent("");
+		pw.print("if(!(");
+		expr.genJava(pw);
+		pw.println(")) System.out.println(\"" + message + "\");");
 	}
 
 }

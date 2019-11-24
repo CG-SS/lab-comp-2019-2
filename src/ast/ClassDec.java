@@ -6,7 +6,6 @@
 package ast;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import lexer.Token.Symbol;
@@ -30,17 +29,17 @@ public class ClassDec extends ASTElement {
 
 	@Override
 	public void genJava(PW pw) {
-		pw.printIdent("class " + className + " ");
+		pw.print("class " + className);
 		if(extendsClass) {
-			pw.printIdent("extends " + superClass.getName());
+			pw.print(" extends " + superClass.getName());
 		}
-		pw.printlnIdent("{");
+		pw.println(" {");
 		pw.add();
 		for(final Member m : memberList) {
 			m.genJava(pw);
 		}
 		pw.sub();
-		pw.printlnIdent("}");
+		pw.println("}");
 	}
 	
 	public boolean isOpen() {

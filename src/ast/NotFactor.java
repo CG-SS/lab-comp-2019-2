@@ -6,16 +6,18 @@
 package ast;
 
 public class NotFactor extends Factor {
+	
+	private final Factor factor;
 
 	public NotFactor(Factor factor) { // TODO bool
 		super(factor.getType());
-		// TODO Auto-generated constructor stub
+		this.factor = factor;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-		
+		pw.print("!");
+		factor.genJava(pw);
 	}
 
 }

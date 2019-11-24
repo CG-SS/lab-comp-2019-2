@@ -8,15 +8,16 @@ package ast;
 import lexer.Token.Symbol;
 
 public class Signal extends ASTElement {
+	
+	private final Symbol signal;
 
 	public Signal(Symbol signal) {
-		// TODO Auto-generated constructor stub
+		this.signal = signal;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.print(signal.toString());
 	}
 
 }

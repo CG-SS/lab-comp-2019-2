@@ -5,9 +5,6 @@
 
 package ast;
 
-import java.util.List;
-
-import lexer.Token.Symbol;
 
 public class Qualifier extends ASTElement {
 	
@@ -23,8 +20,14 @@ public class Qualifier extends ASTElement {
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		if(isOverride) {
+			pw.println("@Override");
+			pw.printIdent("");
+		}
+		if(isFinal) {
+			pw.print("final ");
+		}
+		pw.print(qualifier);
 	}
 
 	public String getString() {

@@ -12,14 +12,14 @@ public class StatementList extends ASTElement {
 	private final List<Statement> statList;
 
 	public StatementList(List<Statement> statList) {
-		// TODO Auto-generated constructor stub
 		this.statList = statList;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-		
+		for(final Statement s : statList) {
+			s.genJava(pw);
+		}
 	}
 	
 	public List<Statement> getStatList(){

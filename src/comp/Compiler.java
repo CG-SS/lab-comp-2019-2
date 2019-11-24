@@ -8,29 +8,19 @@ package comp;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
-import ast.Annot;
-import ast.AnnotParam;
 import ast.AssertStat;
 import ast.AssignExpr;
-import ast.BasicType;
 import ast.BasicValue;
-import ast.BooleanValue;
 import ast.BreakStat;
 import ast.ClassDec;
-import ast.CompStatement;
 import ast.EmptyStat;
 import ast.Expression;
 import ast.ExpressionFactor;
-import ast.ExpressionList;
 import ast.Factor;
 import ast.FieldDec;
-import ast.FormalParamDec;
 import ast.HighOperator;
-import ast.Id;
-import ast.IdList;
 import ast.IfStat;
 import ast.LocalDec;
 import ast.LowOperator;
@@ -658,7 +648,7 @@ public class Compiler {
 		
 		return new FieldDec(type, idList);
 	}*/
-	
+	/*
 	private List<String> idList() {
 		this.assertNextToken(Symbol.ID);
 		final List<String> idList = new ArrayList<>();
@@ -672,7 +662,7 @@ public class Compiler {
 		}
 		
 		return idList;
-	}
+	}*/
 
 	private IfStat ifStat(final boolean isInsideLoop) {
 		
@@ -1322,16 +1312,19 @@ public class Compiler {
 			this.error("Expected 'Out' for printing");
 		}
 		this.assertNextToken(Symbol.DOT);
-		boolean newline = false;
+		boolean newline;
 		
 		//System.out.println("PrintStat " + lexer.peek(1).toString());
 		
 		this.assertNextToken(Symbol.IDCOLON);
-		
-		if(lexer.getCurrentToken().getValue().equals("print")) {
-			lexer.nextToken();
-		} else {
+		// TODO
+		if(lexer.getCurrentToken().getValue().equals("print:")) {
+			newline = false;
+		} else if(lexer.getCurrentToken().getValue().equals("println:")){
 			newline = true;
+		} else {
+			newline = false;
+			this.error("Print functions must be either print or println, found " + lexer.getCurrentToken().getValue());
 		}
 		
 		final Expression expr = this.expression();
@@ -1344,7 +1337,7 @@ public class Compiler {
 			
 			final Expression newExpr = this.expression();
 			
-			if(!newExpr.getType().getId().equals("Int") && !expr.getType().getId().equals("String")) {
+			if(!newExpr.getType().getId().equals("Int") && !newExpr.getType().getId().equals("String")) {
 				this.error("Can only print Int or String");
 			}
 			exprList.add(newExpr);

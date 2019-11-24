@@ -7,15 +7,23 @@ package ast;
 
 public class PrimaryExprSelfDoubleId extends PrimaryExpr {
 
+	private final String idName;
+	private final String secondIdName;
+	
 	public PrimaryExprSelfDoubleId(String idName, String secondIdName, Type type) {
-		// TODO Auto-generated constructor stub
 		super(type);
+		
+		this.idName = idName;
+		this.secondIdName = secondIdName;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.print("this.");
+		pw.print(idName);
+		pw.print(".");
+		pw.print(secondIdName);
+		pw.print("()");
 	}
 
 }

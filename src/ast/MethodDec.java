@@ -20,31 +20,41 @@ public class MethodDec extends Member {
 
 	@Override
 	public void genJava(PW pw) {
-		if(this.getQualifier().isOverride()) {
-			pw.printlnIdent("@Override");
-		}
-		
-		String rType;
+		pw.printIdent("");
+		this.getQualifier().genJava(pw);
 		if(this.getType() == null) {
-			rType = "void";
+			pw.print(" void ");
 		} else {
-			rType = this.getType().getId();
+			pw.print(" ");
+			this.getType().genJava(pw);
+			pw.print(" ");
 		}
 		
-		pw.printIdent(this.getQualifier().getString());
-		pw.print(" " + rType + " " + this.getId() + "(");
 		if(paramList != null) {
-			for(final ParamDec pd : paramList) {
-				pd.genJava(pw);
+			final StringBuilder sb = new StringBuilder();
+			sb.append("_").append(this.getId());
+			sb.setLength(sb.toString().length() - 1);
+			
+			pw.print(sb.toString() + " (");
+			
+			for(int i = 0; i < paramList.size(); i++) {
+				paramList.get(i).genJava(pw);
+				if(i != paramList.size() - 1) {
+					pw.print(", ");
+				}
 			}
+		} else {
+			pw.print(this.getId() + " (");
 		}
 		pw.println(") {");
 		pw.add();
-		for(final Statement stat : statList) {
-			stat.genJava(pw);
+		
+		for(final Statement s : statList) {
+			s.genJava(pw);
 		}
 		pw.sub();
-		pw.printlnIdent("}");
+		pw.printIdent("");
+		pw.println("}");
 	}
 
 	public List<ParamDec> getParameters() {

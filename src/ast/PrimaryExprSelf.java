@@ -9,13 +9,11 @@ public class PrimaryExprSelf extends PrimaryExpr {
 
 	public PrimaryExprSelf(Type type) {
 		super(type);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.print("this");
 	}
 
 }

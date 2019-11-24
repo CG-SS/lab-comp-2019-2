@@ -6,16 +6,17 @@
 package ast;
 
 public class PrimaryExprSuperId extends PrimaryExpr {
+	
+	private final String id;
 
 	public PrimaryExprSuperId(String id, Type type) {
-		// TODO Auto-generated constructor stub
 		super(type);
+		this.id = id;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.print("super." + id + "()");
 	}
 
 }

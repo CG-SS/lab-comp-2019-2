@@ -12,8 +12,8 @@ public class PrimaryExprSelfId extends PrimaryExpr {
 	private final String id;
 
 	public PrimaryExprSelfId(String idName, Type type, boolean isMethod, boolean isField) {
-		// TODO Auto-generated constructor stub
 		super(type);
+		
 		this.isMethod = isMethod;
 		this.isField = isField;
 		this.id = idName;
@@ -21,8 +21,9 @@ public class PrimaryExprSelfId extends PrimaryExpr {
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.print("this." + id);
+		if(isMethod)
+			pw.print("()");
 	}
 
 	public boolean isMethod() {

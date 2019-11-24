@@ -9,7 +9,6 @@ public abstract class PrimaryExpr extends Factor {
 
 	public PrimaryExpr(Type type) {
 		super(type);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -6,15 +6,16 @@
 package ast;
 
 public class BooleanValue extends ASTElement {
+	
+	private final String value;
 
 	public BooleanValue(String value) {
-		// TODO Auto-generated constructor stub
+		this.value = value;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.print(value);
 	}
 
 }

@@ -8,17 +8,24 @@ package ast;
 import java.util.List;
 
 public class SumSimpleExpression extends SimpleExpression {
+	
+	private final SumSubExpression sumSubExpr;
+	private final List<SumSubExpression> sumSubExpressionList;
 
 	public SumSimpleExpression(SumSubExpression sumSubExpr, List<SumSubExpression> sumSubExpressionList, Type type) {
 		super(type);
-		// TODO Auto-generated constructor stub
 		
+		this.sumSubExpr = sumSubExpr;
+		this.sumSubExpressionList = sumSubExpressionList;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-		
+		sumSubExpr.genJava(pw);
+		for(final SumSubExpression s : sumSubExpressionList) {
+			pw.print(" + ");
+			s.genJava(pw);
+		}
 	}
 
 }

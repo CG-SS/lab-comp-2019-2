@@ -8,15 +8,22 @@ package ast;
 import java.util.List;
 
 public class ExpressionList extends ASTElement {
+	
+	private final Expression expr;
+	private final List<Expression> exprList;
 
 	public ExpressionList(Expression expr, List<Expression> exprList) {
-		// TODO Auto-generated constructor stub
+		this.expr = expr;
+		this.exprList = exprList;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		expr.genJava(pw);
+		pw.println(", ");
+		for(final Expression e : exprList) {
+			e.genJava(pw);
+		}
 	}
 
 }

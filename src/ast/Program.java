@@ -22,15 +22,19 @@ public class Program {
 	}
 
 	public void genJava(PW pw) {
-		pw.printlnIdent("public class " + mainJavaClassName + " {");
+		pw.println("public class " + mainJavaClassName + " {");
 		pw.add();
-		pw.printlnIdent("public static void main(String[] args) {");
+		pw.printIdent("");
+		pw.println("public static void main(String[] args) {");
 		pw.add();
-		pw.printlnIdent("new Program().run();");
+		pw.printIdent("");
+		pw.println("new Program().run();");
 		pw.sub();
-		pw.printlnIdent("}");
+		pw.printIdent("");
+		pw.println("}");
 		pw.sub();
-		pw.printlnIdent("}");
+		pw.printIdent("");
+		pw.println("}");
 		
 		for(final ClassDec classDec : classDecList) {
 			classDec.genJava(pw);

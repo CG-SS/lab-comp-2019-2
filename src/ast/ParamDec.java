@@ -17,8 +17,8 @@ public class ParamDec extends ASTElement {
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		type.genJava(pw);
+		pw.print(" " + idName);
 	}
 	
 	public Type getType() {

@@ -15,8 +15,7 @@ public class BasicType extends ASTElement {
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		pw.print(type);
 	}
 
 }

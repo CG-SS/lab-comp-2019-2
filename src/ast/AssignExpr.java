@@ -18,12 +18,14 @@ public class AssignExpr extends Statement {
 
 	@Override
 	public void genJava(final PW pw) {
+		pw.printIdent("");
 		expr.genJava(pw);
+		
 		if(assignExpr != null){
 			pw.print(" = ");
 			assignExpr.genJava(pw);
-			pw.println(";");
 		}
+		pw.println(";");
 	}
 
 }

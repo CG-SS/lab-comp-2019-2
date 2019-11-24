@@ -8,16 +8,27 @@ package ast;
 import java.util.List;
 
 public class SimpleSubExpression extends SumSubExpression {
+	
+	private final Term term;
+	private final List<LowOperator> opList;
+	private final List<Term> termList;
 
 	public SimpleSubExpression(Term term, List<LowOperator> opList, List<Term> termList, Type type) {
 		super(type);
-		// TODO Auto-generated constructor stub
+		this.term = term;
+		this.opList = opList;
+		this.termList = termList;
 	}
 
 	@Override
 	public void genJava(PW pw) {
-		// TODO Auto-generated method stub
-
+		term.genJava(pw);
+		for(int i = 0; i < opList.size(); i++) {
+			pw.print(" ");
+			opList.get(i).genJava(pw);
+			pw.print(" ");
+			termList.get(i).genJava(pw);
+		}
 	}
 
 }
